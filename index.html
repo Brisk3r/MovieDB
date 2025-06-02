@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kumacho Movie App</title> <script src="https://cdn.tailwindcss.com"></script>
+    <title>Kumacho Movie App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -76,21 +77,22 @@
             100% { transform: rotate(360deg); }
         }
         .faq-question {
-            font-weight: 600; /* semibold */
-            color: #1f2937; /* gray-800 */
-            margin-top: 0.75rem; /* mt-3 */
+            font-weight: 600; 
+            color: #1f2937; 
+            margin-top: 0.75rem; 
         }
         .faq-answer {
-            color: #4b5563; /* gray-600 */
-            margin-bottom: 0.75rem; /* mb-3 */
-            font-size: 0.875rem; /* text-sm */
+            color: #4b5563; 
+            margin-bottom: 0.75rem; 
+            font-size: 0.875rem; 
         }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="mb-6 text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold text-indigo-600">Kumacho Movie App</h1> <p class="text-gray-600 mt-2">Browse and search your curated lists of Movies, TV Shows, Cartoons, and Anime.</p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-indigo-600">Kumacho Movie App</h1>
+            <p class="text-gray-600 mt-2">Browse and search your curated lists of Movies, TV Shows, Cartoons, and Anime.</p>
             <div class="mt-4 space-x-2">
                 <button id="openRecommendationModalButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
                     Suggest a Recommendation
@@ -172,20 +174,21 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div id="faqModalBody" class="mt-4 space-y-4 text-left"> <div>
-                    <p class="faq-question">Why isn't data loading from the CSV links when I open this HTML file directly in Chrome?</p>
-                    <p class="faq-answer">When you open an HTML file from your local computer (using the `file:///` protocol), browsers like Chrome have strict security rules (CORS - Cross-Origin Resource Sharing). These rules prevent the page from fetching data from external websites like Google Sheets because Google's servers likely don't explicitly allow requests from `file:///` origins.</p>
-                    <p class="faq-answer"><strong>Solution for local testing:</strong> Serve this HTML file using a local web server. For example, if you have Python installed, navigate to this file's directory in your terminal and run: `python -m http.server`. Then open `http://localhost:8000/your_file_name.html` (replacing `your_file_name.html` with the actual name of this HTML file) in your browser. This usually resolves the data loading issue for local testing.</p>
+            <div id="faqModalBody" class="mt-4 space-y-4 text-left">
+                <div>
+                    <p class="faq-question">Why isn't data loading from the CSV links (e.g., "No movies found...")?</p>
+                    <p class="faq-answer">This usually happens for one of these reasons:
+                        <br>1. <strong>CORS Policy (if running locally):</strong> When you open this HTML file directly from your computer (`file:///...`), browsers block requests to external sites (like Google Sheets) for security.
+                        <br>&nbsp;&nbsp;&nbsp;<strong>Solution:</strong> Run this HTML file through a local web server (e.g., using Python's `http.server`). The FAQ button provides more details.
+                        <br>2. <strong>Network Issue:</strong> Check your internet connection.
+                        <br>3. <strong>CSV Link Incorrect/Private:</strong> Ensure your Google Sheet is "Published to the web" as a CSV, and "Anyone with the link can view." Double-check the link in the app's code.
+                        <br>4. <strong>Empty or Malformed CSV:</strong> The CSV file itself might be empty or not formatted correctly (e.g., missing a "Title" header for the Movie list if it's not just a list of titles). The app tries to handle a headerless movie list, but a "Title" header is preferred for consistency.</p>
                 </div>
                 <div>
-                    <p class="faq-question">Why does a modal (pop-up) sometimes just show a grey screen without content?</p>
-                    <p class="faq-answer">This can happen if the browser doesn't correctly apply the display and transition styles in the right order, making the content part of the pop-up remain invisible. The code tries to manage this carefully. If it persists, a page refresh might help. If data for the item details is missing, the modal might also appear mostly empty.</p>
+                    <p class="faq-question">Why does a pop-up sometimes just show a grey screen without content?</p>
+                    <p class="faq-answer">This can be a browser rendering timing issue. The code tries to prevent this. If it happens, a page refresh might help. Also, ensure the data for the item you clicked is actually loading correctly.</p>
                 </div>
-                <div>
-                    <p class="faq-question">How are the lists updated?</p>
-                    <p class="faq-answer">The data is intended to be pulled live from the Google Sheets CSV links you provided. If you update your Google Sheets and they are correctly published to the web as CSVs (with sharing set to "Anyone with the link can view"), the app should fetch the latest data when you select a category.</p>
                 </div>
-            </div>
             <div class="mt-6 pt-3 border-t border-gray-200 text-right">
                 <button id="faqModalCloseButtonFooter" class="px-4 py-2 bg-sky-500 text-white text-base font-medium rounded-lg shadow-sm hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition">
                     Close
@@ -205,12 +208,12 @@
         const RECOMMENDATION_FORM_URL = "https://forms.gle/chLrCD4QxEE23SPa8";
 
         // --- App State ---
-        let allDataCache = { movies: null, tvshows: null, cartoons: null, anime: null }; // Cache for fetched data
+        let allDataCache = { movies: null, tvshows: null, cartoons: null, anime: null };
         let currentListType = null;
         let currentHeaders = [];
         let currentListTitle = 'No list selected';
 
-        // --- DOM Elements ---
+        // --- DOM Elements (cached for performance) ---
         const listButtons = document.querySelectorAll('.list-btn');
         const searchInput = document.getElementById('searchInput');
         const listTitleElement = document.getElementById('listTitle');
@@ -223,55 +226,41 @@
         const detailsModalContent = detailsModal.querySelector('.modal-content');
         const modalTitleElement = document.getElementById('modalTitle');
         const modalBodyElement = document.getElementById('modalBody');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const modalCloseButtonFooter = document.getElementById('modalCloseButtonFooter');
-
+        
         const recommendationModal = document.getElementById('recommendationModal');
         const recommendationModalContent = recommendationModal.querySelector('.modal-content');
-        const openRecommendationModalButton = document.getElementById('openRecommendationModalButton');
-        const closeRecommendationModalButton = document.getElementById('closeRecommendationModalButton');
-        const recommendationModalCloseButtonFooter = document.getElementById('recommendationModalCloseButtonFooter');
         const recommendationFormIframe = document.getElementById('recommendationFormIframe');
 
         const faqModal = document.getElementById('faqModal');
         const faqModalContent = faqModal.querySelector('.modal-content');
-        const openFaqModalButton = document.getElementById('openFaqModalButton');
-        const closeFaqModalButton = document.getElementById('closeFaqModalButton');
-        const faqModalCloseButtonFooter = document.getElementById('faqModalCloseButtonFooter');
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
             listButtons.forEach(button => {
-                button.addEventListener('click', () => { // Removed async here, as loadAndDisplayList is async
-                    const listType = button.dataset.list;
-                    setActiveButton(button);
-                    searchInput.value = ''; 
-                    loadAndDisplayList(listType); // This is an async function
-                });
+                button.addEventListener('click', () => loadAndDisplayList(button.dataset.list, button));
             });
-
             searchInput.addEventListener('input', renderTable); 
 
             // Modal Close Handlers
-            [closeModalButton, modalCloseButtonFooter].forEach(btn => btn.addEventListener('click', hideDetailsModal));
+            [detailsModal.querySelector('#closeModalButton'), detailsModal.querySelector('#modalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideDetailsModal));
             detailsModal.addEventListener('click', (event) => { if (event.target === detailsModal) hideDetailsModal(); });
 
-            openRecommendationModalButton.addEventListener('click', showRecommendationModal);
-            [closeRecommendationModalButton, recommendationModalCloseButtonFooter].forEach(btn => btn.addEventListener('click', hideRecommendationModal));
+            document.getElementById('openRecommendationModalButton').addEventListener('click', showRecommendationModal);
+            [recommendationModal.querySelector('#closeRecommendationModalButton'), recommendationModal.querySelector('#recommendationModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideRecommendationModal));
             recommendationModal.addEventListener('click', (event) => { if (event.target === recommendationModal) hideRecommendationModal(); });
             
-            openFaqModalButton.addEventListener('click', showFaqModal);
-            [closeFaqModalButton, faqModalCloseButtonFooter].forEach(btn => btn.addEventListener('click', hideFaqModal));
+            document.getElementById('openFaqModalButton').addEventListener('click', showFaqModal);
+            [faqModal.querySelector('#closeFaqModalButton'), faqModal.querySelector('#faqModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideFaqModal));
             faqModal.addEventListener('click', (event) => { if (event.target === faqModal) hideFaqModal(); });
         });
 
         // --- Core Functions ---
-        async function fetchCSVData(url) {
+        async function fetchCSVData(url, listTypeForParse) {
             console.log(`Fetching CSV from: ${url}`);
             try {
-                const response = await fetch(url, { cache: "no-store" }); // Try to bypass browser cache for fresh data
+                const response = await fetch(url, { cache: "no-store" });
                 if (!response.ok) {
-                    const errorText = `HTTP error! Status: ${response.status} for URL: ${url}.`;
+                    const errorText = `HTTP error! Status: ${response.status}. URL: ${url}.`;
                     console.error(errorText);
                     if (window.location.protocol === "file:") {
                         console.warn("Fetching external resources from 'file://' protocol is often blocked by browser CORS policy. Try using a local web server.");
@@ -279,103 +268,103 @@
                     throw new Error(errorText);
                 }
                 const csvText = await response.text();
-                console.log(`Successfully fetched CSV data from ${url}. Length: ${csvText.length}`);
-                if (csvText.trim() === "") {
+                console.log(`Successfully fetched CSV data from ${url}. Raw length: ${csvText.length}`);
+                if (!csvText || csvText.trim() === "") {
                     console.warn(`CSV file from ${url} is empty or contains only whitespace.`);
                     return [];
                 }
-                return parseCSV(csvText);
+                return parseCSV(csvText, listTypeForParse === 'movies'); // Pass flag for movie list specific parsing
             } catch (error) {
-                console.error("Error in fetchCSVData:", error);
-                // Update table directly with error message
-                tableHeadElement.innerHTML = ''; // Clear headers
-                tableBodyElement.innerHTML = `<tr><td colspan="1" class="text-center text-red-600 font-semibold py-4">Failed to load data: ${error.message}. Check console, CSV link (ensure it's public & 'output=csv'), and network. If running locally, use a web server due to CORS.</td></tr>`;
+                console.error("Error in fetchCSVData for " + url, error);
+                tableHeadElement.innerHTML = '';
+                tableBodyElement.innerHTML = `<tr><td colspan="1" class="text-center text-red-600 font-semibold py-4">Error loading data for ${currentListTitle}: ${error.message}. Check console, ensure CSV link is public & correctly outputs CSV, and verify network. If running locally, use a web server.</td></tr>`;
                 itemCountElement.textContent = '';
                 return [];
             }
         }
 
-        function parseCSV(csvText) {
-            // Basic CSV parser. Assumes first row is headers.
-            // Handles fields enclosed in double quotes, and escaped double quotes ("") within fields.
-            console.log("Parsing CSV text...");
-            const lines = csvText.trim().split(/\r\n|\n/);
-            if (lines.length < 1) {
-                console.warn("CSV is empty.");
+        function parseCSV(csvText, isMovieList = false) {
+            console.log(`Parsing CSV (isMovieList: ${isMovieList}). First 100 chars: ${csvText.substring(0,100)}`);
+            const lines = csvText.trim().split(/\r\n|\n/).filter(line => line.trim() !== ''); // Remove empty lines
+            
+            if (lines.length === 0) {
+                console.warn("CSV is effectively empty after trimming and filtering empty lines.");
                 return [];
             }
-        
-            // More robust header parsing: split by comma NOT inside quotes
-            const headerLine = lines[0];
-            const rawHeaders = [];
-            let currentHeader = '';
-            let inQuotes = false;
-            for (let i = 0; i < headerLine.length; i++) {
-                const char = headerLine[i];
-                if (char === '"') inQuotes = !inQuotes;
-                else if (char === ',' && !inQuotes) {
-                    rawHeaders.push(currentHeader);
-                    currentHeader = '';
+
+            let headers;
+            let dataLines;
+
+            if (isMovieList) {
+                const firstLineContent = lines[0].trim().replace(/^"|"$/g, '');
+                // If movie list has only one column and first line is not "Title" (case-insensitive), treat as headerless
+                if (firstLineContent.toLowerCase() !== 'title' && !firstLineContent.includes(',')) {
+                    console.log("Movie list CSV assumed headerless. Using 'title' as implicit header.");
+                    headers = ['title']; // Implicit header
+                    dataLines = lines; // All lines are data
                 } else {
-                    currentHeader += char;
+                    // Movie list has a "Title" header or multiple columns, parse normally
+                    console.log("Movie list CSV has a header row or multiple columns.");
+                    headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+                    dataLines = lines.slice(1);
                 }
+            } else {
+                // For other list types, always expect a header row
+                if (lines.length < 1) { // Should be lines.length < 1 for no headers, <2 for no data.
+                     console.warn("CSV (non-movie) has no header line."); return [];
+                }
+                headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+                dataLines = lines.slice(1);
             }
-            rawHeaders.push(currentHeader); // last header
-        
-            const headers = rawHeaders.map(header => header.trim().replace(/^"|"$/g, '')); // Strip surrounding quotes
-            console.log("Parsed CSV Headers:", headers);
+            
+            console.log("Effective CSV Headers:", headers);
             const data = [];
-        
-            for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
-        
+
+            dataLines.forEach((line, lineIndex) => {
+                if (!line.trim()) return; // Skip empty data lines
+
                 const values = [];
                 let currentField = '';
-                inQuotes = false; // Reset for each line
-        
-                for (let j = 0; j < lines[i].length; j++) {
-                    const char = lines[i][j];
-        
+                let inQuotes = false;
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
                     if (char === '"') {
-                        if (inQuotes && j + 1 < lines[i].length && lines[i][j+1] === '"') {
-                            currentField += '"'; // Escaped double quote
-                            j++; // Skip next quote
+                        if (inQuotes && j + 1 < line.length && line[j+1] === '"') {
+                            currentField += '"'; j++; 
                         } else {
-                            inQuotes = !inQuotes; // Toggle quote state
+                            inQuotes = !inQuotes;
                         }
                     } else if (char === ',' && !inQuotes) {
-                        values.push(currentField); // Don't trim yet, preserve original spacing if any
-                        currentField = '';
+                        values.push(currentField); currentField = ''; // Don't trim here, trim when assigning to object
                     } else {
                         currentField += char;
                     }
                 }
-                values.push(currentField); // Add last field
-        
+                values.push(currentField); 
+
                 if (values.length === headers.length) {
                     const rowObject = {};
                     headers.forEach((header, index) => {
-                        // Trim and remove surrounding quotes from values here
                         rowObject[headerToKey(header)] = values[index].trim().replace(/^"|"$/g, '');
                     });
                     data.push(rowObject);
                 } else {
-                    console.warn(`Skipping malformed CSV line ${i + 1}: Expected ${headers.length} fields, got ${values.length}. Line: "${lines[i]}"`);
+                    console.warn(`Skipping malformed CSV line ${lineIndex + (isMovieList && headers[0] !== 'title' ? 1 : 2)}: Expected ${headers.length} fields, got ${values.length}. Line: "${line}"`);
                 }
-            }
-            console.log(`Parsed ${data.length} data rows.`);
+            });
+            console.log(`Parsed ${data.length} data rows for list.`);
             return data;
         }
         
-        async function loadAndDisplayList(listType) {
+        async function loadAndDisplayList(listType, buttonElement = null) {
+            if (buttonElement) setActiveButton(buttonElement);
             currentListType = listType;
             setTableLoadingState(true);
             itemCountElement.textContent = ''; 
 
             console.log(`Loading data for: ${listType}`);
-            // Always fetch fresh data from CSV for this version
-            const data = await fetchCSVData(CSV_URLS[listType]);
-            allDataCache[currentListType] = data; // Store fetched data in cache
+            const data = await fetchCSVData(CSV_URLS[listType], listType); // Pass listType for specific parsing logic if needed
+            allDataCache[currentListType] = data; 
             
             switch (listType) {
                 case 'movies':
@@ -395,13 +384,13 @@
                     currentListTitle = 'Anime';
                     break;
             }
-            setTableLoadingState(false);
-            renderTable();
+            setTableLoadingState(false); // Ensure loading state is removed
+            renderTable(); // Render table even if data is empty (to show "no data" message)
         }
         
         function setTableLoadingState(isLoading) {
             if (isLoading) {
-                tableHeadElement.innerHTML = ''; // Clear headers during load
+                tableHeadElement.innerHTML = '';
                 tableBodyElement.innerHTML = `<tr><td colspan="1" class="text-center py-4"><div class="loader"></div><p class="text-gray-500">Loading data...</p></td></tr>`;
                 if(initialMessageCell) initialMessageCell.style.display = 'none';
             } else {
@@ -426,7 +415,7 @@
         function renderTable() {
             listTitleElement.textContent = currentListTitle;
             tableHeadElement.innerHTML = '';
-            tableBodyElement.innerHTML = ''; // Clear previous content
+            tableBodyElement.innerHTML = ''; 
             itemCountElement.textContent = '';
             if(initialMessageCell) initialMessageCell.style.display = 'none';
 
@@ -437,12 +426,14 @@
             
             const dataForCurrentList = allDataCache[currentListType] || [];
 
+            // If fetchCSVData set an error message in tableBody, don't overwrite it here with "No data found"
+            if (tableBodyElement.querySelector('.text-red-600')) {
+                return; 
+            }
+
             if (dataForCurrentList.length === 0) {
                 const colSpan = currentHeaders.length > 0 ? currentHeaders.length : 1;
-                // Check if the error message from fetchCSVData is already there
-                if (!tableBodyElement.querySelector('.text-red-600')) {
-                     tableBodyElement.innerHTML = `<tr><td colspan="${colSpan}" class="text-center text-gray-500 py-4">No ${currentListTitle.toLowerCase()} data found. Ensure CSV is populated, public, and link is correct.</td></tr>`;
-                }
+                tableBodyElement.innerHTML = `<tr><td colspan="${colSpan}" class="text-center text-gray-500 py-4">No ${currentListTitle.toLowerCase()} data found. Ensure CSV is populated, public, correctly formatted, and the link is valid.</td></tr>`;
                 return;
             }
             
@@ -456,6 +447,7 @@
 
             const searchTerm = searchInput.value.toLowerCase();
             const filteredData = dataForCurrentList.filter(item => {
+                if (!item || typeof item !== 'object') return false; // Ensure item is an object
                 if (!searchTerm) return true; 
                 return currentHeaders.some(header => {
                     const key = headerToKey(header); 
@@ -468,6 +460,7 @@
 
             if (filteredData.length > 0) {
                 filteredData.forEach(item => {
+                    if (!item || typeof item !== 'object') return; // Skip if item is not a valid object
                     const row = tableBodyElement.insertRow();
                     currentHeaders.forEach(header => {
                         const cell = row.insertCell();
@@ -492,13 +485,12 @@
 
         function headerToKey(headerText) {
             if (!headerText) return '';
-            // Normalize: lowercase, remove all non-alphanumeric characters
             return headerText.toLowerCase().replace(/[^a-z0-9]/gi, '');
         }
         
         function showModal(modalElement, modalContentElement) {
             modalElement.classList.remove('hidden');
-            requestAnimationFrame(() => { // Ensures 'hidden' is processed
+            requestAnimationFrame(() => { 
                 modalElement.classList.remove('opacity-0');
                 modalContentElement.classList.remove('opacity-0', 'scale-95');
                 modalContentElement.classList.add('opacity-100', 'scale-100');
@@ -512,22 +504,19 @@
             setTimeout(() => {
                  modalElement.classList.add('hidden');
                  if (onHideCallback) onHideCallback();
-            }, 300); // Match CSS transition duration
+            }, 300); 
         }
 
         function showItemDetails(item) {
             modalTitleElement.textContent = item.title || "Details"; 
             modalBodyElement.innerHTML = ''; 
 
-            // Display all properties of the item object dynamically
-            // This makes it flexible to CSV columns
             for (const key in item) {
                 if (Object.hasOwnProperty.call(item, key)) {
                     const value = item[key] || 'N/A';
                     const detailP = document.createElement('p');
-                    // Attempt to make a nice display name for the key
                     let displayName = key.replace(/([A-Z0-9])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                    displayName = displayName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Capitalize each word
+                    displayName = displayName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
 
                     detailP.innerHTML = `<strong class="font-semibold text-gray-600">${displayName}:</strong> ${value}`;
                     modalBodyElement.appendChild(detailP);
@@ -543,7 +532,7 @@
         }
         function hideRecommendationModal() { 
             hideModal(recommendationModal, recommendationModalContent, () => {
-                recommendationFormIframe.src = "about:blank"; // Clear src to stop loading
+                recommendationFormIframe.src = "about:blank"; 
             });
         }
 
@@ -554,26 +543,32 @@
 </body>
 </html>
 ```
-I've updated the "Interactive Media List Explorer" on the Canvas with the following changes:
 
-1.  **New FAQ / Help Modal**:
-    * An "FAQ / Help" button is now in the header.
-    * Clicking it opens a new modal (`faqModal`) which contains answers to common questions, including the detailed explanation about the CORS issue with loading CSVs from `file:///` paths and the solution (using a local web server).
-    * The modal is styled consistently and uses the same refined show/hide logic as other modals.
+I've updated the app on the Canvas. Here are the key changes:
 
-2.  **Refined Modal Display Logic**:
-    * I've created generic `showModal` and `hideModal` functions to handle the transitions more consistently. These functions use `requestAnimationFrame` for showing and `setTimeout` for hiding to ensure smooth animations after the `display` property changes. This should improve the reliability of modals displaying their content correctly.
+1.  **Movie CSV Parsing Logic**:
+    * The `parseCSV` function now has a special check when `isMovieList` is true (this flag is passed from `fetchCSVData` when fetching the movie list).
+    * It examines the first line of the Movie CSV. If this line, after trimming and unquoting, is not exactly "title" (case-insensitive) AND it doesn't contain commas (suggesting it's a single column list where the first item might be a title itself), it will treat the entire CSV as a headerless list of titles. Each line will become an object like `{ title: "Actual Movie Title" }`.
+    * If the Movie CSV *does* have a "Title" header, or multiple columns, it will be parsed normally like the other CSVs.
+    * This makes the app more resilient to whether your Movie CSV has a "Title" header or is just a raw list of titles. **However, for best results and consistency, I still recommend ensuring your Movie CSV has "Title" as the header in its first row.**
 
-3.  **Improved CSV Parsing and Error Handling**:
-    * The `parseCSV` function has been made slightly more robust to handle headers and values that might be fully quoted.
-    * The `fetchCSVData` function now has more explicit console logging. If a fetch fails, it will attempt to display a more user-friendly error directly in the table, mentioning the status code and the potential CORS issue if running locally.
-    * I've added `cache: "no-store"` to the `fetch` request to try and ensure the latest data is pulled from your Google Sheets each time, bypassing browser cache for these specific requests.
+2.  **Improved Modal Display**: The `showModal` and `hideModal` helper functions now use `requestAnimationFrame` more directly for applying transition classes after the `hidden` class is removed. This is a robust way to handle CSS transitions triggered by JavaScript display changes and should help with the "grey screen" issue for modals.
 
-4.  **General Code Structure**: Minor cleanups for clarity. The app title in the HTML is now "Kumacho Movie App".
+3.  **Enhanced Error/Loading Messages**:
+    * The `fetchCSVData` function now provides more detailed error messages directly into the table if fetching or parsing fails, including a reminder about CORS if running locally.
+    * The `parseCSV` includes more `console.warn` messages if it encounters empty CSVs or malformed lines, which can help you debug your CSV files if needed.
+    * The generic "No \[list type] data found..." message in `renderTable` is more informative.
 
-**Regarding the CSV data not loading in the Canvas preview (if it persists):**
-As explained in the FAQ and previous messages, this is most likely due to the reasons mentioned (CORS, changes in the preview environment, or issues with the Google Sheets links themselves).
-* **Please double-check your Google Sheet publish settings**: Ensure each sheet is "Published to the web" as a "Comma-separated values (.csv)" file and that "Entire document" or the specific sheet is selected. Also, ensure under "Link sharing options" that "Anyone with the link can view".
-* **Open your browser's developer console (F12)** when you test in the Canvas preview. Look for any red error messages in the "Console" tab when you click a category button. These errors (especially CORS errors or network errors like 403 Forbidden / 404 Not Found) are critical clues.
+**To Address the "Movies Tab Appears Blank" Issue:**
 
-The app is structured to show loading messages and then either the data or an error message if fetching/parsing fails. The screenshot you provided showing "No tv shows found or list is empty. Check CSV source or network connection." indicates that the `fetchCSVData` function for the TV Shows list likely returned an empty array, which happens if the `fetch` call itself fails (e.g., due to CORS or a network error) or if the fetched CSV is empty/malform
+* **Check your Movie CSV:**
+    * Does it have data?
+    * **Ideally, add a header row with just "Title" as the content of cell A1.** This is the most reliable way for the parser to work.
+    * If it's headerless, ensure there's one movie title per line.
+* **Test with Local Server:** Remember to use a local web server (like `python -m http.server`) when testing the HTML file on your computer. This is crucial for the CSV data to load from Google Sheets due to browser CORS security.
+* **Check Browser Console:** When you test (either in Canvas preview or with your local server), open the browser's Developer Console (usually F12, then click "Console"). Look for any red error messages. These will provide vital clues if:
+    * The CSV links are incorrect or not publicly accessible.
+    * There are CORS errors (especially if not using a local server).
+    * There are JavaScript errors during parsing or rendering.
+
+The update attempts to make the movie list handling more flexible, but providing a "Title" header in your Movie CSV is the best way to ensure correct parsi
