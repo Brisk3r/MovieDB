@@ -182,7 +182,7 @@
                         <br>&nbsp;&nbsp;&nbsp;<strong>Solution:</strong> Run this HTML file through a local web server (e.g., using Python's `http.server`). The FAQ button provides more details.
                         <br>2. <strong>Network Issue:</strong> Check your internet connection.
                         <br>3. <strong>CSV Link Incorrect/Private:</strong> Ensure your Google Sheet is "Published to the web" as a CSV, and "Anyone with the link can view." Double-check the link in the app's code.
-                        <br>4. <strong>Empty or Malformed CSV:</strong> The CSV file itself might be empty or not formatted correctly (e.g., missing a "Title" header for the Movie list if it's not just a list of titles). The app tries to handle a headerless movie list, but a "Title" header is preferred for consistency.</p>
+                        <br>4. <strong>Empty or Malformed CSV:</strong> The CSV file itself might be empty or not formatted correctly. For the "Movies" list, if it doesn't have a "Titles" header in the first row, the app tries to treat each line as a title. For other lists, a header row is expected.</p>
                 </div>
                 <div>
                     <p class="faq-question">Why does a pop-up sometimes just show a grey screen without content?</p>
@@ -273,7 +273,7 @@
                     console.warn(`CSV file from ${url} is empty or contains only whitespace.`);
                     return [];
                 }
-                return parseCSV(csvText, listTypeForParse === 'movies'); // Pass flag for movie list specific parsing
+                return parseCSV(csvText, listTypeForParse); // Pass listType for specific parsing logic
             } catch (error) {
                 console.error("Error in fetchCSVData for " + url, error);
                 tableHeadElement.innerHTML = '';
@@ -283,9 +283,9 @@
             }
         }
 
-        function parseCSV(csvText, isMovieList = false) {
-            console.log(`Parsing CSV (isMovieList: ${isMovieList}). First 100 chars: ${csvText.substring(0,100)}`);
-            const lines = csvText.trim().split(/\r\n|\n/).filter(line => line.trim() !== ''); // Remove empty lines
+        function parseCSV(csvText, listType) { // Added listType parameter
+            console.log(`Parsing CSV for listType: ${listType}. First 100 chars: ${csvText.substring(0,100)}`);
+            const lines = csvText.trim().split(/\r\n|\n/).filter(line => line.trim() !== '');
             
             if (lines.length === 0) {
                 console.warn("CSV is effectively empty after trimming and filtering empty lines.");
@@ -294,24 +294,23 @@
 
             let headers;
             let dataLines;
+            const isMovieList = listType === 'movies';
 
             if (isMovieList) {
                 const firstLineContent = lines[0].trim().replace(/^"|"$/g, '');
-                // If movie list has only one column and first line is not "Title" (case-insensitive), treat as headerless
-                if (firstLineContent.toLowerCase() !== 'title' && !firstLineContent.includes(',')) {
-                    console.log("Movie list CSV assumed headerless. Using 'title' as implicit header.");
-                    headers = ['title']; // Implicit header
-                    dataLines = lines; // All lines are data
+                // If movie list CSV's first line is NOT "Titles" (case-insensitive) AND it doesn't contain a comma (likely single column of titles)
+                if (firstLineContent.toLowerCase() !== 'titles' && !firstLineContent.includes(',')) {
+                    console.log("Movie list CSV assumed headerless. Using 'titles' as implicit header.");
+                    headers = ['titles']; // Use 'titles' to match expected key
+                    dataLines = lines; 
                 } else {
-                    // Movie list has a "Title" header or multiple columns, parse normally
-                    console.log("Movie list CSV has a header row or multiple columns.");
+                    console.log("Movie list CSV has a header row (expected 'Titles', 'Year', etc.) or multiple columns.");
                     headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
                     dataLines = lines.slice(1);
                 }
             } else {
-                // For other list types, always expect a header row
-                if (lines.length < 1) { // Should be lines.length < 1 for no headers, <2 for no data.
-                     console.warn("CSV (non-movie) has no header line."); return [];
+                if (lines.length < 1) { 
+                     console.warn(`CSV for ${listType} has no header line.`); return [];
                 }
                 headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
                 dataLines = lines.slice(1);
@@ -321,7 +320,7 @@
             const data = [];
 
             dataLines.forEach((line, lineIndex) => {
-                if (!line.trim()) return; // Skip empty data lines
+                if (!line.trim()) return;
 
                 const values = [];
                 let currentField = '';
@@ -335,7 +334,7 @@
                             inQuotes = !inQuotes;
                         }
                     } else if (char === ',' && !inQuotes) {
-                        values.push(currentField); currentField = ''; // Don't trim here, trim when assigning to object
+                        values.push(currentField); currentField = '';
                     } else {
                         currentField += char;
                     }
@@ -345,14 +344,18 @@
                 if (values.length === headers.length) {
                     const rowObject = {};
                     headers.forEach((header, index) => {
-                        rowObject[headerToKey(header)] = values[index].trim().replace(/^"|"$/g, '');
+                        // For movies, if we implicitly set header to 'titles', use that.
+                        const keyToUse = isMovieList && headers.length === 1 && headers[0] === 'titles' ? 'titles' : headerToKey(header);
+                        rowObject[keyToUse] = values[index].trim().replace(/^"|"$/g, '');
                     });
                     data.push(rowObject);
                 } else {
-                    console.warn(`Skipping malformed CSV line ${lineIndex + (isMovieList && headers[0] !== 'title' ? 1 : 2)}: Expected ${headers.length} fields, got ${values.length}. Line: "${line}"`);
+                    // Adjust line number for console warning if movies list was treated as headerless
+                    const actualLineNumber = lineIndex + (isMovieList && headers[0] === 'titles' ? 1 : 2);
+                    console.warn(`Skipping malformed CSV line ${actualLineNumber}: Expected ${headers.length} fields, got ${values.length}. Line: "${line}"`);
                 }
             });
-            console.log(`Parsed ${data.length} data rows for list.`);
+            console.log(`Parsed ${data.length} data rows for ${listType}.`);
             return data;
         }
         
@@ -363,12 +366,12 @@
             itemCountElement.textContent = ''; 
 
             console.log(`Loading data for: ${listType}`);
-            const data = await fetchCSVData(CSV_URLS[listType], listType); // Pass listType for specific parsing logic if needed
+            const data = await fetchCSVData(CSV_URLS[listType], listType); 
             allDataCache[currentListType] = data; 
             
             switch (listType) {
                 case 'movies':
-                    currentHeaders = ['Title']; 
+                    currentHeaders = ['Titles']; // Display header will be "Titles"
                     currentListTitle = 'Movies';
                     break;
                 case 'tvshows':
@@ -384,8 +387,8 @@
                     currentListTitle = 'Anime';
                     break;
             }
-            setTableLoadingState(false); // Ensure loading state is removed
-            renderTable(); // Render table even if data is empty (to show "no data" message)
+            setTableLoadingState(false); 
+            renderTable(); 
         }
         
         function setTableLoadingState(isLoading) {
@@ -426,7 +429,6 @@
             
             const dataForCurrentList = allDataCache[currentListType] || [];
 
-            // If fetchCSVData set an error message in tableBody, don't overwrite it here with "No data found"
             if (tableBodyElement.querySelector('.text-red-600')) {
                 return; 
             }
@@ -441,13 +443,13 @@
             currentHeaders.forEach(headerText => {
                 const th = document.createElement('th');
                 th.className = 'px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
-                th.textContent = headerText;
+                th.textContent = headerText; // Use the display header text
                 headerRow.appendChild(th);
             });
 
             const searchTerm = searchInput.value.toLowerCase();
             const filteredData = dataForCurrentList.filter(item => {
-                if (!item || typeof item !== 'object') return false; // Ensure item is an object
+                if (!item || typeof item !== 'object') return false;
                 if (!searchTerm) return true; 
                 return currentHeaders.some(header => {
                     const key = headerToKey(header); 
@@ -460,7 +462,7 @@
 
             if (filteredData.length > 0) {
                 filteredData.forEach(item => {
-                    if (!item || typeof item !== 'object') return; // Skip if item is not a valid object
+                    if (!item || typeof item !== 'object') return; 
                     const row = tableBodyElement.insertRow();
                     currentHeaders.forEach(header => {
                         const cell = row.insertCell();
@@ -468,7 +470,8 @@
                         const key = headerToKey(header); 
                         const value = item[key] || '';
                         
-                        if (header === 'Title') { 
+                        // Make the content of the first column (usually Title/Titles) clickable
+                        if (header === currentHeaders[0]) { 
                             cell.textContent = value;
                             cell.classList.add('clickable-title');
                             cell.onclick = () => showItemDetails(item);
@@ -508,7 +511,16 @@
         }
 
         function showItemDetails(item) {
-            modalTitleElement.textContent = item.title || "Details"; 
+            let displayTitle = "Details";
+            // Determine the correct key for the title based on list type or common patterns
+            if (currentListType === 'movies' && item.titles) { // 'titles' from movie CSV
+                displayTitle = item.titles;
+            } else if (item.title) { // 'title' for other lists
+                displayTitle = item.title;
+            } else if (Object.keys(item).length > 0) { // Fallback
+                displayTitle = item[Object.keys(item)[0]];
+            }
+            modalTitleElement.textContent = displayTitle;
             modalBodyElement.innerHTML = ''; 
 
             for (const key in item) {
@@ -571,4 +583,4 @@ I've updated the app on the Canvas. Here are the key changes:
     * There are CORS errors (especially if not using a local server).
     * There are JavaScript errors during parsing or rendering.
 
-The update attempts to make the movie list handling more flexible, but providing a "Title" header in your Movie CSV is the best way to ensure correct parsi
+The update attempts to make the movie list handling more flexible, but providing a "Title" header in your Movie CSV is the best way to ensure correct pa
