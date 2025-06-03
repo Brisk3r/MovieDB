@@ -5,194 +5,444 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kumacho Movie App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #f3f4f6; /* gray-100 */
+            --bg-secondary: #ffffff; /* white */
+            --text-primary: #1f2937; /* gray-800 */
+            --text-secondary: #4b5563; /* gray-600 */
+            --text-accent: #4f46e5; /* indigo-600 */
+            --text-accent-hover: #3730a3; /* indigo-800 */
+            --border-color: #e5e7eb; /* gray-200 */
+            --header-bg: linear-gradient(to right, #1e293b, #334155); /* slate-900 to slate-700 */
+            --header-text: #ffffff;
+            --button-movies-bg: #4f46e5; /* indigo-600 */
+            --button-movies-hover-bg: #4338ca; /* indigo-700 */
+            --button-tvshows-bg: #0d9488; /* teal-600 */
+            --button-tvshows-hover-bg: #0f766e; /* teal-700 */
+            --button-cartoons-bg: #f59e0b; /* amber-500 */
+            --button-cartoons-hover-bg: #d97706; /* amber-600 */
+            --button-anime-bg: #e11d48; /* rose-600 */
+            --button-anime-hover-bg: #be123c; /* rose-700 */
+            --button-stats-bg: #7c3aed; /* purple-600 */
+            --button-stats-hover-bg: #6d28d9; /* purple-700 */
+            --button-action-bg: #16a34a; /* green-600 */
+            --button-action-hover-bg: #15803d; /* green-700 */
+            --button-info-bg: #0ea5e9; /* sky-500 */
+            --button-info-hover-bg: #0284c7; /* sky-600 */
+            --button-reset-bg: #ef4444; /* red-500 */
+            --button-reset-hover-bg: #dc2626; /* red-600 */
+            --th-bg: #f3f4f6; /* gray-100 */
+            --table-row-hover-bg: #f9fafb; /* gray-50 */
+            --footer-bg: #1f2937; /* gray-800 */
+            --footer-text: #9ca3af; /* gray-400 */
+            --footer-link-hover: #e5e7eb; /* gray-200 */
+            --modal-content-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: #d1d5db; /* gray-300 */
+            --input-focus-ring: rgba(99, 102, 241, 0.5);
+            --shadow-color: rgba(0,0,0,0.1);
+            --genre-checkbox-container-bg: #ffffff;
+            --genre-checkbox-border: #e5e7eb;
+            --genre-checkbox-text: #374151; /* gray-700 */
+            --genre-checkbox-hover-bg: #f9fafb; /* gray-50 */
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-md */
+            --card-hover-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-xl */
+            --view-toggle-bg: #e5e7eb; /* gray-200 */
+            --view-toggle-active-bg: var(--text-accent);
+            --view-toggle-active-text: #ffffff;
+            --view-toggle-text: var(--text-secondary);
+        }
+
+        body.dark-mode {
+            --bg-primary: #1f2937; 
+            --bg-secondary: #374151; 
+            --text-primary: #f3f4f6; 
+            --text-secondary: #d1d5db; 
+            --text-accent: #818cf8; 
+            --text-accent-hover: #a5b4fc; 
+            --border-color: #4b5563; 
+            --header-bg: linear-gradient(to right, #0f172a, #1e293b); 
+            --header-text: #e5e7eb; 
+            --button-movies-bg: #6366f1; 
+            --button-movies-hover-bg: #4f46e5; 
+            --button-tvshows-bg: #2dd4bf; 
+            --button-tvshows-hover-bg: #14b8a6; 
+            --button-cartoons-bg: #facc15; 
+            --button-cartoons-hover-bg: #eab308; 
+            --button-anime-bg: #f43f5e; 
+            --button-anime-hover-bg: #e11d48; 
+            --button-stats-bg: #9333ea; /* purple-500 */
+            --button-stats-hover-bg: #7e22ce; /* purple-600 */
+            --button-action-bg: #22c55e; 
+            --button-action-hover-bg: #16a34a; 
+            --button-info-bg: #38bdf8; 
+            --button-info-hover-bg: #0ea5e9; 
+            --button-reset-bg: #f87171; 
+            --button-reset-hover-bg: #ef4444; 
+            --th-bg: #4b5563; 
+            --table-row-hover-bg: #374151; 
+            --footer-bg: #0f172a; 
+            --footer-text: #9ca3af; 
+            --footer-link-hover: #cbd5e1; 
+            --modal-content-bg: #374151; 
+            --input-bg: #4b5563; 
+            --input-border: #6b7280; 
+            --input-focus-ring: rgba(129, 140, 248, 0.5); 
+            --shadow-color: rgba(0,0,0,0.3);
+            --genre-checkbox-container-bg: #4b5563; 
+            --genre-checkbox-border: #6b7280; 
+            --genre-checkbox-text: #d1d5db; 
+            --genre-checkbox-hover-bg: #374151; 
+            --card-bg: #4b5563; 
+            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -1px rgba(0,0,0,0.12);
+            --card-hover-shadow: 0 10px 15px -3px rgba(0,0,0,0.2), 0 4px 6px -2px rgba(0,0,0,0.1);
+            --view-toggle-bg: #4b5563; 
+            --view-toggle-active-bg: var(--text-accent);
+            --view-toggle-text: var(--text-primary);
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif; display: flex; flex-direction: column;
+            min-height: 100vh; background-color: var(--bg-primary); color: var(--text-primary);
         }
-        .table-container {
-            max-height: 50vh; /* Adjusted for pagination */
-            overflow-y: auto;
-        }
-        th, td {
-            padding: 0.75rem;
-            text-align: left; 
-            border-bottom-width: 1px;
-        }
+        .main-content { flex-grow: 1; }
+        .table-container { max-height: 40vh; overflow-y: auto; } 
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
         th {
-            background-color: #f3f4f6; /* bg-gray-100 */
-            position: sticky;
-            top: 0;
-            z-index: 10; 
+            background-color: var(--th-bg); color: var(--text-secondary); 
+            position: sticky; top: 0; z-index: 10; cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
         }
-        .table-container::-webkit-scrollbar {
-            width: 8px;
+        th:hover { background-color: var(--table-row-hover-bg); }
+        .sort-indicator { margin-left: 0.25rem; font-size: 0.75em; }
+        #tableBody tr:hover { background-color: var(--table-row-hover-bg); }
+        .table-container::-webkit-scrollbar { width: 8px; }
+        .table-container::-webkit-scrollbar-track { background: var(--bg-primary); border-radius: 10px; }
+        .table-container::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        .table-container::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        #searchInput, #startYearInput, #endYearInput {
+            background-color: var(--input-bg); border-color: var(--input-border);
+            color: var(--text-primary); padding: 0.75rem; 
+            border-radius: 0.5rem; box-shadow: 0 1px 2px 0 var(--shadow-color); 
+            transition: box-shadow 0.2s, border-color 0.2s;
         }
-        .table-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+        #searchInput:focus, #startYearInput:focus, #endYearInput:focus {
+            box-shadow: 0 0 0 3px var(--input-focus-ring); border-color: var(--text-accent); 
+            outline: none;
         }
-        .table-container::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; margin: 0; 
         }
-        .table-container::-webkit-scrollbar-thumb:hover {
-            background: #555;
+        input[type="number"] { -moz-appearance: textfield; }
+
+        #genreCheckboxContainer {
+            max-height: 150px; overflow-y: auto;
+            border: 1px solid var(--genre-checkbox-border);
+            background-color: var(--genre-checkbox-container-bg);
+            padding: 0.75rem; border-radius: 0.5rem; margin-top: 0.25rem;
         }
-        #searchInput:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); 
-        }
-        .clickable-title {
-            color: #4f46e5; 
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .clickable-title:hover {
-            color: #3730a3; 
-        }
-        .modal {
-            transition: opacity 0.3s ease-in-out;
-            z-index: 50; 
-        }
-        .modal-content {
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            max-height: 90vh; 
-            overflow-y: auto;
-        }
-        #recommendationModal iframe {
-            width: 100%;
-            height: 70vh;
-            border: none;
-        }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db; /* Blue */
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .faq-question {
-            font-weight: 600; 
-            color: #1f2937; 
-            margin-top: 0.75rem; 
-        }
-        .faq-answer {
-            color: #4b5563; 
-            margin-bottom: 0.75rem; 
-            font-size: 0.875rem; 
-        }
-        .pagination-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem; /* rounded-md */
-            font-weight: 600; /* font-semibold */
+        #genreCheckboxContainer label {
+            display: flex; align-items: center; 
+            padding: 0.25rem 0.5rem; cursor: pointer;
+            border-radius: 0.25rem; color: var(--genre-checkbox-text);
             transition: background-color 0.15s ease-in-out;
         }
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        #genreCheckboxContainer label:hover { background-color: var(--genre-checkbox-hover-bg); }
+        #genreCheckboxContainer input[type="checkbox"] {
+            margin-right: 0.5rem; accent-color: var(--text-accent); 
         }
+
+        .clickable-title { color: var(--text-accent); text-decoration: underline; cursor: pointer; }
+        .clickable-title:hover { color: var(--text-accent-hover); }
+        
+        .modal { transition: opacity 0.3s ease-in-out; z-index: 50; }
+        .modal-content { 
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 90vh; overflow-y: auto; 
+            background-color: var(--modal-content-bg); color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .modal-content h3 { color: var(--text-primary); }
+        .modal-content #modalBodyDetails, .modal-content #faqModalBody, .modal-content #changelogModalBody { color: var(--text-secondary); }
+        .modal-content .border-b { border-bottom-color: var(--border-color); }
+        .modal-content .border-t { border-top-color: var(--border-color); }
+
+        #recommendationModal iframe { width: 100%; height: 70vh; border: none; }
+        .loader {
+            border: 4px solid var(--bg-secondary); border-top: 4px solid var(--text-accent); 
+            border-radius: 50%; width: 30px; height: 30px;
+            animation: spin 1s linear infinite; margin: 0 auto;
+        }
+        .picking-loader { width: 40px; height: 40px; margin-bottom: 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        #faqModalBody .faq-item, #changelogModalBody .faq-item, #statsDisplayContainer .stat-item { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+        #faqModalBody .faq-item:last-child, #changelogModalBody .faq-item:last-child, #statsDisplayContainer .stat-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .faq-question, .stat-title { font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1rem; }
+        .faq-answer, .stat-value { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; }
+        .faq-answer strong, .stat-value strong { color: var(--text-primary); }
+        .faq-answer code { background-color: var(--bg-primary); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.8em; }
+        .faq-answer ul, .stat-value ul { list-style-type: disc; margin-left: 1.25rem; margin-top: 0.5rem; }
+        .faq-answer li, .stat-value li { margin-bottom: 0.25rem; }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 600; 
+            transition: background-color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+            color: white; 
+        }
+        .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination-btn.prev-btn { background-color: var(--text-secondary); }
+        .pagination-btn.prev-btn:hover:not(:disabled) { background-color: var(--text-primary); }
+        .pagination-btn.next-btn { background-color: var(--text-accent); }
+        .pagination-btn.next-btn:hover:not(:disabled) { background-color: var(--text-accent-hover); }
+        
+        .footer-link { cursor: pointer; transition: color 0.2s ease-in-out; color: var(--footer-text); }
+        .footer-link:hover { color: var(--footer-link-hover); }
+
+        .list-btn {
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .list-btn.active { 
+            opacity: 1 !important; color: white; 
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color); 
+        }
+        .list-btn:not(.active) { opacity: 0.75; }
+        .list-btn:not(.active):hover { opacity: 1; }
+
+        .btn-movies { background-color: var(--button-movies-bg); }
+        .btn-movies:hover:not(.active) { background-color: var(--button-movies-hover-bg); }
+        .list-btn.active.btn-movies { background-color: var(--button-movies-hover-bg); } 
+
+        .btn-tvshows { background-color: var(--button-tvshows-bg); }
+        .btn-tvshows:hover:not(.active) { background-color: var(--button-tvshows-hover-bg); }
+        .list-btn.active.btn-tvshows { background-color: var(--button-tvshows-hover-bg); }
+
+        .btn-cartoons { background-color: var(--button-cartoons-bg); }
+        .btn-cartoons:hover:not(.active) { background-color: var(--button-cartoons-hover-bg); }
+        .list-btn.active.btn-cartoons { background-color: var(--button-cartoons-hover-bg); }
+
+        .btn-anime { background-color: var(--button-anime-bg); }
+        .btn-anime:hover:not(.active) { background-color: var(--button-anime-hover-bg); }
+        .list-btn.active.btn-anime { background-color: var(--button-anime-hover-bg); }
+
+        .btn-stats { background-color: var(--button-stats-bg); }
+        .btn-stats:hover:not(.active) { background-color: var(--button-stats-hover-bg); }
+        .list-btn.active.btn-stats { background-color: var(--button-stats-hover-bg); }
+        
+        .btn-action { background-color: var(--button-action-bg); }
+        .btn-action:hover { background-color: var(--button-action-hover-bg); }
+        .btn-info { background-color: var(--button-info-bg); }
+        .btn-info:hover { background-color: var(--button-info-hover-bg); }
+        .btn-reset-filters { background-color: var(--button-reset-bg); color: white; }
+        .btn-reset-filters:hover { background-color: var(--button-reset-hover-bg); }
+
+        .theme-button {
+            padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500;
+            transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-color); color: var(--text-primary);
+            background-color: var(--bg-secondary); box-shadow: 0 1px 2px 0 var(--shadow-color);
+        }
+        .theme-button:hover {
+            background-color: var(--bg-primary);
+            box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color);
+        }
+        .theme-button.active-theme {
+            background-color: var(--text-accent); color: var(--header-text); font-weight: 600;
+        }
+
+        .card-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 1.5rem; 
+            padding-top: 1rem; 
+        }
+        .media-card {
+            background-color: var(--card-bg);
+            border-radius: 0.5rem; 
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            overflow: hidden; 
+            cursor: pointer;
+            display: flex; flex-direction: column;
+        }
+        .media-card:hover {
+            transform: translateY(-5px); box-shadow: var(--card-hover-shadow);
+        }
+        .media-card-content { padding: 1rem; flex-grow: 1; }
+        .media-card-title {
+            font-size: 1.125rem; font-weight: 600; color: var(--text-primary);
+            margin-bottom: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .media-card-detail { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+        
+        .view-toggle-button {
+            padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; cursor: pointer;
+            background-color: var(--view-toggle-bg); color: var(--view-toggle-text);
+            border: 1px solid var(--border-color); transition: background-color 0.2s, color 0.2s;
+        }
+        .view-toggle-button.active-view {
+            background-color: var(--view-toggle-active-bg); color: var(--view-toggle-active-text);
+            font-weight: 600;
+        }
+        #filterControlsContainer { 
+            display: block; 
+        }
+
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+<body class="text-gray-800 antialiased"> 
+    <div class="main-content container mx-auto p-4 sm:p-6 lg:p-8">
         <header class="mb-6 text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold text-indigo-600">Kumacho Movie App</h1>
-            <p class="text-gray-600 mt-2">Browse and search your curated lists of Movies, TV Shows, Cartoons, and Anime.</p>
-            <div class="mt-4 space-x-2">
-                <button id="openRecommendationModalButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
+            <div class="flex justify-center items-center mb-2 space-x-2">
+                <button id="lightModeButton" class="theme-button">☀️ Light</button>
+                <button id="darkModeButton" class="theme-button">🌙 Dark</button>
+                <button id="randomModeButton" class="theme-button">🎨 Random</button>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold" style="color: var(--text-accent);">Kumacho Movie App</h1>
+            <p style="color: var(--text-secondary);" class="mt-2">Browse and search your curated lists of Movies, TV Shows, Cartoons, and Anime.</p>
+            <div class="mt-4 space-x-2 sm:space-x-3"> 
+                <button id="openRecommendationModalButton" class="btn-action text-white font-semibold py-2 px-4 sm:px-6 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105 text-sm sm:text-base">
                     Suggest a Recommendation
                 </button>
-                <button id="openFaqModalButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">
-                    FAQ / Help
+                <button id="randomPickButton" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 sm:px-6 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105 text-sm sm:text-base">
+                    🎲 Feeling Lucky?
                 </button>
             </div>
         </header>
 
         <div class="mb-6 flex flex-wrap justify-center gap-2 sm:gap-3">
-            <button data-list="movies" class="list-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">Movies</button>
-            <button data-list="tvshows" class="list-btn bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">TV Shows</button>
-            <button data-list="cartoons" class="list-btn bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">Cartoons</button>
-            <button data-list="anime" class="list-btn bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105">Anime</button>
+            <button data-list="movies" class="list-btn btn-movies text-white font-semibold py-2 px-4 rounded-lg shadow-md">Movies</button>
+            <button data-list="tvshows" class="list-btn btn-tvshows text-white font-semibold py-2 px-4 rounded-lg shadow-md">TV Shows</button>
+            <button data-list="cartoons" class="list-btn btn-cartoons text-white font-semibold py-2 px-4 rounded-lg shadow-md">Cartoons</button>
+            <button data-list="anime" class="list-btn btn-anime text-white font-semibold py-2 px-4 rounded-lg shadow-md">Anime</button>
+            <button data-list="stats" id="statsButton" class="list-btn btn-stats text-white font-semibold py-2 px-4 rounded-lg shadow-md">📊 Statistics</button>
         </div>
 
-        <div class="mb-6">
-            <input type="text" id="searchInput" placeholder="Search current list (e.g., title, genre, year)..." class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-        </div>
-
-        <div id="listContainer" class="bg-white p-4 sm:p-6 rounded-xl shadow-xl">
-            <h2 id="listTitle" class="text-2xl font-semibold mb-4 text-gray-700">Select a category to view</h2>
-            <div class="table-container rounded-lg border border-gray-200">
-                <table id="mediaTable" class="min-w-full divide-y divide-gray-200">
-                    <thead id="tableHead"></thead>
-                    <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-                        <tr><td id="initialMessageCell" class="text-center text-gray-500 py-4" colspan="4">No list selected. Please choose a category above.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="paginationControls" class="mt-4 flex justify-between items-center">
+        <div id="filterControlsContainer" class="mb-4 p-4 rounded-lg shadow" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start"> 
+                <div>
+                    <label for="searchInput" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Search List</label>
+                    <input type="text" id="searchInput" placeholder="Search current list..." class="w-full">
                 </div>
-            <p id="itemCount" class="text-sm text-gray-500 mt-2 text-right"></p>
+                <div class="md:col-span-2 lg:col-span-1"> 
+                    <label for="genreCheckboxContainer" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Filter by Genre</label>
+                    <div id="genreCheckboxContainer" class="w-full p-2 border rounded-lg shadow-sm">
+                        <p id="genrePlaceholder" class="text-sm" style="color: var(--text-secondary);">Select a list to see genres.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 md:col-span-2 lg:col-span-1"> 
+                     <div>
+                        <label for="startYearInput" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">Start Year</label>
+                        <input type="number" id="startYearInput" placeholder="YYYY" class="w-full" disabled>
+                    </div>
+                    <div>
+                        <label for="endYearInput" class="block text-sm font-medium mb-1" style="color: var(--text-secondary);">End Year</label>
+                        <input type="number" id="endYearInput" placeholder="YYYY" class="w-full" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div class="flex space-x-1 p-1 rounded-lg" style="background-color: var(--view-toggle-bg);">
+                    <button id="tableViewButton" class="view-toggle-button active-view">Table</button>
+                    <button id="cardViewButton" class="view-toggle-button">Cards</button>
+                </div>
+                <button id="resetFiltersButton" class="btn-reset-filters font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out transform hover:scale-105 text-sm">
+                    Clear All Filters
+                </button>
+            </div>
+        </div>
+
+        <div id="mediaDisplayContainer" class="p-4 sm:p-6 rounded-xl shadow-xl" style="background-color: var(--bg-secondary);">
+            <h2 id="listTitle" class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">Select a category to view</h2>
+            
+            <div id="tableDisplayContainer">
+                <div class="table-container rounded-lg border" style="border-color: var(--border-color);">
+                    <table id="mediaTable" class="min-w-full divide-y" style="divide-color: var(--border-color);">
+                        <thead id="tableHead"></thead>
+                        <tbody id="tableBody" class="divide-y" style="background-color: var(--bg-secondary); divide-color: var(--border-color);"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="cardDisplayContainer" class="card-grid-container hidden"></div>
+            
+            <div id="statsDisplayContainer" class="hidden p-2 md:p-4">
+                </div>
+
+            <div id="paginationControls" class="mt-4 flex justify-between items-center"></div>
+            <p id="itemCount" class="text-sm mt-2 text-right" style="color: var(--text-secondary);"></p>
         </div>
     </div>
 
+    <footer class="py-6 mt-8" style="background-color: var(--footer-bg); color: var(--footer-text);">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-2 space-x-4">
+                <button id="openFaqModalButton" class="footer-link text-sm">FAQ / Help</button>
+                <span class="text-gray-600" style="color: var(--footer-text) !important;">|</span>
+                <button id="openChangelogModalButton" class="footer-link text-sm">Changelog</button>
+            </div>
+            <p class="text-xs">&copy; <span id="currentYear"></span> Kumacho Movie App by Avram Parker. All rights reserved.</p>
+        </div>
+    </footer>
+
     <div id="detailsModal" class="modal fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden p-4 opacity-0">
-        <div class="modal-content relative mx-auto p-6 border w-full max-w-md shadow-xl rounded-xl bg-white transform scale-95 opacity-0">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                <h3 class="text-xl leading-6 font-medium text-gray-900" id="modalTitle">Item Details</h3>
-                <button id="closeModalButton" class="text-gray-400 hover:text-gray-600 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div class="modal-content relative mx-auto p-6 w-full max-w-md shadow-xl rounded-xl transform scale-95 opacity-0">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h3 class="text-xl leading-6 font-medium" id="modalTitleDetails">Item Details</h3>
+                <button id="closeModalButton" class="transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="mt-4"><div id="modalBody" class="text-sm text-gray-700 space-y-2"></div></div>
-            <div class="mt-6 pt-3 border-t border-gray-200 text-right">
-                <button id="modalCloseButtonFooter" class="px-4 py-2 bg-indigo-500 text-white text-base font-medium rounded-lg shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">Close</button>
+            <div class="mt-4"><div id="modalBodyDetails" class="text-sm space-y-2 text-center"></div></div>
+            <div class="mt-6 pt-3 border-t text-right">
+                <button id="modalCloseButtonFooter" class="px-4 py-2 btn-movies text-white text-base font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition">Close</button>
             </div>
         </div>
     </div>
     <div id="recommendationModal" class="modal fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden p-4 opacity-0">
-        <div class="modal-content relative mx-auto p-6 border w-full max-w-2xl shadow-xl rounded-xl bg-white transform scale-95 opacity-0">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                <h3 class="text-xl leading-6 font-medium text-gray-900">Suggest a Recommendation</h3>
-                <button id="closeRecommendationModalButton" class="text-gray-400 hover:text-gray-600 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div class="modal-content relative mx-auto p-6 w-full max-w-2xl shadow-xl rounded-xl transform scale-95 opacity-0">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h3 class="text-xl leading-6 font-medium">Suggest a Recommendation</h3>
+                <button id="closeRecommendationModalButton" class="transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             <div class="mt-4"><iframe id="recommendationFormIframe" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe></div>
-            <div class="mt-6 pt-3 border-t border-gray-200 text-right">
-                <button id="recommendationModalCloseButtonFooter" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-lg shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">Close</button>
+            <div class="mt-6 pt-3 border-t text-right">
+                <button id="recommendationModalCloseButtonFooter" class="px-4 py-2 btn-action text-white text-base font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition">Close</button>
             </div>
         </div>
     </div>
     <div id="faqModal" class="modal fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden p-4 opacity-0">
-        <div class="modal-content relative mx-auto p-6 border w-full max-w-lg shadow-xl rounded-xl bg-white transform scale-95 opacity-0">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                <h3 class="text-xl leading-6 font-medium text-gray-900">FAQ / Help</h3>
-                <button id="closeFaqModalButton" class="text-gray-400 hover:text-gray-600 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div class="modal-content relative mx-auto p-6 w-full max-w-lg shadow-xl rounded-xl transform scale-95 opacity-0">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h3 class="text-xl leading-6 font-medium">FAQ / Help</h3>
+                <button id="closeFaqModalButton" class="transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div id="faqModalBody" class="mt-4 space-y-4 text-left">
-                <div>
-                    <p class="faq-question">Why isn't data loading from the CSV links (e.g., "No movies found...")?</p>
-                    <p class="faq-answer">This usually happens for one of these reasons:
-                        <br>1. <strong>CORS Policy (if running locally):</strong> When you open this HTML file directly from your computer (`file:///...`), browsers block requests to external sites (like Google Sheets) for security.
-                        <br>&nbsp;&nbsp;&nbsp;<strong>Solution:</strong> Run this HTML file through a local web server (e.g., using Python's `http.server`).
-                        <br>2. <strong>Network Issue:</strong> Check your internet connection.
-                        <br>3. <strong>CSV Link Incorrect/Private:</strong> Ensure your Google Sheet is "Published to the web" as a CSV, and "Anyone with the link can view." Double-check the link in the app's code.
-                        <br>4. <strong>Empty or Malformed CSV:</strong> The CSV file itself might be empty or not formatted correctly. For the "Movies" list, the app expects a "Titles" header (or "Title", or will treat a single column of titles as headerless). For other lists, a header row is expected with the relevant column names.</p>
-                </div>
-                <div>
-                    <p class="faq-question">Why does a pop-up sometimes just show a grey screen without content?</p>
-                    <p class="faq-answer">This can be a browser rendering timing issue. The code tries to prevent this. If it happens, a page refresh might help. Also, ensure the data for the item you clicked is actually loading correctly.</p>
-                </div>
+            <div id="faqModalBody" class="mt-4 text-left"></div>
+            <div class="mt-6 pt-3 border-t text-right">
+                <button id="faqModalCloseButtonFooter" class="px-4 py-2 btn-info text-white text-base font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition">Close</button>
             </div>
-            <div class="mt-6 pt-3 border-t border-gray-200 text-right">
-                <button id="faqModalCloseButtonFooter" class="px-4 py-2 bg-sky-500 text-white text-base font-medium rounded-lg shadow-sm hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition">Close</button>
+        </div>
+    </div>
+    <div id="changelogModal" class="modal fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden p-4 opacity-0">
+        <div class="modal-content relative mx-auto p-6 border w-full max-w-lg shadow-xl rounded-xl transform scale-95 opacity-0">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h3 class="text-xl leading-6 font-medium" id="changelogModalTitle">Changelog</h3>
+                <button id="closeChangelogModalButton" class="transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="changelogModalBody" class="mt-4 text-left"></div>
+            <div class="mt-6 pt-3 border-t text-right">
+                <button id="changelogModalCloseButtonFooter" class="px-4 py-2 btn-info text-white text-base font-medium rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition">Close</button>
             </div>
         </div>
     </div>
@@ -207,356 +457,694 @@
         };
         const RECOMMENDATION_FORM_URL = "https://forms.gle/chLrCD4QxEE23SPa8";
         const ITEMS_PER_PAGE = 15;
+        const FAQ_CONTENT = `
+            <div class="faq-item">
+                <p class="faq-question">Why isn't data loading from the CSV links (e.g., "No movies found...")?</p>
+                <p class="faq-answer">This usually happens for one of these reasons:
+                    <ul>
+                        <li><strong>CORS Policy (if running locally):</strong> When you open this HTML file directly from your computer (<code>file:///...</code>), browsers block requests to external sites (like Google Sheets) for security.
+                            <br><strong>Solution:</strong> Run this HTML file through a local web server.</li>
+                        <li><strong>Network Issue:</strong> Check your internet connection.</li>
+                        <li><strong>CSV Link Incorrect/Private:</strong> Ensure your Google Sheet is "Published to the web" as a CSV, and "Anyone with the link can view."</li>
+                        <li><strong>Empty or Malformed CSV:</strong> The CSV file itself might be empty or not formatted correctly.</li>
+                        <li><strong>Google Sheets Caching/Delay:</strong> Sometimes, after publishing, there's a delay before the CSV URL is live.</li>
+                    </ul>
+                </p>
+            </div>
+            <div class="faq-item">
+                <p class="faq-question">How does the search work?</p>
+                <p class="faq-answer">The search is case-insensitive and checks all columns in the currently loaded list for a match.</p>
+            </div>
+            <div class="faq-item">
+                <p class="faq-question">How is the "Movies" list CSV handled differently?</p>
+                <p class="faq-answer">The "Movies" list can be a simple one-column list of titles (with or without a "Titles" header) or a multi-column CSV. The first column will always be treated as the title.</p>
+            </div>
+        `;
+         const CHANGELOG_CONTENT = `
+            <div class="faq-item"> 
+                <p class="faq-question">v0.8.0 (Current Version)</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Added Statistics Tab to display aggregate data.</li>
+                </ul>
+            </div>
+            <div class="faq-item"> 
+                <p class="faq-question">v0.7.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Added Card View option alongside Table View.</li>
+                </ul>
+            </div>
+            <div class="faq-item"> 
+                <p class="faq-question">v0.6.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Implemented Multi-Genre Filtering using checkboxes.</li>
+                </ul>
+            </div>
+            <div class="faq-item"> 
+                <p class="faq-question">v0.5.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Added Year Range filtering for applicable lists.</li>
+                    <li>Added "Clear All Filters" button.</li>
+                    <li>Added Changelog modal to footer with initial entries.</li>
+                </ul>
+            </div>
+            <div class="faq-item">
+                <p class="faq-question">v0.4.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Implemented Light, Dark, and Random color themes.</li>
+                    <li>Added "Feeling Lucky?" random pick feature across all lists.</li>
+                </ul>
+            </div>
+            <div class="faq-item">
+                <p class="faq-question">v0.3.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Implemented clickable column header sorting.</li>
+                    <li>Enhanced active list button styling and table row hover effects.</li>
+                </ul>
+            </div>
+            <div class="faq-item">
+                <p class="faq-question">v0.2.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Added Genre Filtering (single-select dropdown).</li>
+                    <li>Moved FAQ button to footer.</li>
+                </ul>
+            </div>
+            <div class="faq-item">
+                <p class="faq-question">v0.1.0</p>
+                <ul class="faq-answer list-disc ml-5">
+                    <li>Initial app setup with CSV loading for Movies, TV Shows, Cartoons, Anime.</li>
+                    <li>Search, pagination, details modal, recommendation modal, and FAQ modal implemented.</li>
+                </ul>
+            </div>
+        `;
 
         // --- App State ---
-        let allDataCache = { movies: null, tvshows: null, cartoons: null, anime: null };
-        let currentListType = null;
-        let currentHeaders = [];
+        let allDataCache = { 
+            movies: { headers: [], data: [] }, 
+            tvshows: { headers: [], data: [] }, 
+            cartoons: { headers: [], data: [] }, 
+            anime: { headers: [], data: [] } 
+        };
+        let currentListType = null; 
+        let currentHeaders = []; 
+        let currentDataKeys = []; 
         let currentListTitle = 'No list selected';
         let currentPage = 1;
         let currentFilteredData = [];
-
+        let selectedGenres = new Set(); 
+        let sortColumnKey = null; 
+        let sortDirection = 'asc'; 
+        let isPickingRandom = false;
+        let startYearFilter = ""; 
+        let endYearFilter = "";   
+        let currentViewMode = 'table'; 
 
         // --- DOM Elements ---
-        const listButtons = document.querySelectorAll('.list-btn');
+        const lightModeButton = document.getElementById('lightModeButton');
+        const darkModeButton = document.getElementById('darkModeButton');
+        const randomModeButton = document.getElementById('randomModeButton');
+        const listButtons = document.querySelectorAll('.list-btn'); 
         const searchInput = document.getElementById('searchInput');
+        const genreCheckboxContainerElement = document.getElementById('genreCheckboxContainer');
+        const genrePlaceholderElement = document.getElementById('genrePlaceholder');
+        const startYearInputElement = document.getElementById('startYearInput'); 
+        const endYearInputElement = document.getElementById('endYearInput');   
+        const resetFiltersButton = document.getElementById('resetFiltersButton'); 
         const listTitleElement = document.getElementById('listTitle');
+        
+        const mediaDisplayContainer = document.getElementById('mediaDisplayContainer'); 
+        const tableDisplayContainer = document.getElementById('tableDisplayContainer');
+        const cardDisplayContainer = document.getElementById('cardDisplayContainer');
+        const statsDisplayContainer = document.getElementById('statsDisplayContainer'); 
+        const filterControlsContainer = document.getElementById('filterControlsContainer'); 
+
+        const tableViewButton = document.getElementById('tableViewButton');
+        const cardViewButton = document.getElementById('cardViewButton');
+
         const tableHeadElement = document.getElementById('tableHead');
         const tableBodyElement = document.getElementById('tableBody');
         const itemCountElement = document.getElementById('itemCount');
-        const initialMessageCell = document.getElementById('initialMessageCell');
         const paginationControlsElement = document.getElementById('paginationControls');
+        const randomPickButton = document.getElementById('randomPickButton'); 
         
-        const detailsModal = document.getElementById('detailsModal');
-        const detailsModalContent = detailsModal.querySelector('.modal-content');
-        const modalTitleElement = document.getElementById('modalTitle');
-        const modalBodyElement = document.getElementById('modalBody');
+        const detailsModalElement = document.getElementById('detailsModal');
+        const detailsModalContentElement = detailsModalElement.querySelector('.modal-content');
+        const modalTitleDetailsElement = document.getElementById('modalTitleDetails');
+        const modalBodyDetailsElement = document.getElementById('modalBodyDetails');
         
-        const recommendationModal = document.getElementById('recommendationModal');
-        const recommendationModalContent = recommendationModal.querySelector('.modal-content');
-        const recommendationFormIframe = document.getElementById('recommendationFormIframe');
+        const recommendationModalElement = document.getElementById('recommendationModal');
+        const recommendationModalContentElement = recommendationModalElement.querySelector('.modal-content');
+        const recommendationFormIframeElement = document.getElementById('recommendationFormIframe');
 
-        const faqModal = document.getElementById('faqModal');
-        const faqModalContent = faqModal.querySelector('.modal-content');
+        const faqModalElement = document.getElementById('faqModal');
+        const faqModalContentElement = faqModalElement.querySelector('.modal-content');
+        const faqModalBodyElement = document.getElementById('faqModalBody');
+        const openFaqModalButton = document.getElementById('openFaqModalButton'); 
+
+        const changelogModalElement = document.getElementById('changelogModal'); 
+        const changelogModalContentElement = changelogModalElement.querySelector('.modal-content'); 
+        const changelogModalBodyElement = document.getElementById('changelogModalBody'); 
+        const openChangelogModalButton = document.getElementById('openChangelogModalButton'); 
+
+
+        // --- Theme Functions ---
+        function applyTheme(theme) {
+            const body = document.body;
+            body.classList.remove('dark-mode', 'random-mode-active'); 
+            document.documentElement.removeAttribute('style'); 
+            lightModeButton.classList.remove('active-theme');
+            darkModeButton.classList.remove('active-theme');
+            randomModeButton.classList.remove('active-theme');
+            if (theme === 'dark') {
+                body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); darkModeButton.classList.add('active-theme');
+            } else if (theme === 'light') {
+                localStorage.setItem('theme', 'light'); lightModeButton.classList.add('active-theme');
+            } else if (theme === 'random') {
+                applyRandomColors(); randomModeButton.classList.add('active-theme');
+            }
+        }
+        function applyRandomColors() {
+            const randomHex = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            const bgColor = randomHex(); const textColor = isColorDark(bgColor) ? '#f0f0f0' : '#111111'; 
+            const accentColor = randomHex(); const cardBgColor = isColorDark(bgColor) ? lightenColor(bgColor, 15) : darkenColor(bgColor, 5);
+            document.documentElement.style.setProperty('--bg-primary', bgColor);
+            document.documentElement.style.setProperty('--text-primary', textColor);
+            document.documentElement.style.setProperty('--bg-secondary', cardBgColor);
+            document.documentElement.style.setProperty('--text-secondary', isColorDark(cardBgColor) ? '#e0e0e0' : '#333333');
+            document.documentElement.style.setProperty('--text-accent', accentColor);
+            document.documentElement.style.setProperty('--text-accent-hover', lightenColor(accentColor, -20)); 
+            document.documentElement.style.setProperty('--border-color', isColorDark(bgColor) ? lightenColor(bgColor, 20) : darkenColor(bgColor, 10));
+            document.documentElement.style.setProperty('--header-bg', `linear-gradient(to right, ${randomHex()}, ${randomHex()})`);
+            document.documentElement.style.setProperty('--footer-bg', darkenColor(bgColor, 20));
+            document.documentElement.style.setProperty('--th-bg', cardBgColor); 
+            document.documentElement.style.setProperty('--modal-content-bg', cardBgColor);
+            document.documentElement.style.setProperty('--input-bg', cardBgColor);
+            document.documentElement.style.setProperty('--button-movies-bg', accentColor);
+            document.documentElement.style.setProperty('--button-movies-hover-bg', lightenColor(accentColor, -10));
+            document.documentElement.style.setProperty('--card-bg', cardBgColor); 
+        }
+        function isColorDark(hexColor) {
+            const rgb = parseInt(hexColor.slice(1), 16);   
+            const r = (rgb >> 16) & 0xff;  const g = (rgb >>  8) & 0xff;  const b = (rgb >>  0) & 0xff;  
+            const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; return luma < 128; 
+        }
+        function lightenColor(hex, percent) {
+            hex = hex.replace(/^\s*#|\s*$/g, ''); if(hex.length == 3){ hex = hex.replace(/(.)/g, '$1$1'); }
+            var r = parseInt(hex.substr(0, 2), 16), g = parseInt(hex.substr(2, 2), 16), b = parseInt(hex.substr(4, 2), 16);
+            return '#' + ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+               ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+               ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+        }
+        function darkenColor(hex, percent) { return lightenColor(hex, -percent); }
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
-            listButtons.forEach(button => {
-                button.addEventListener('click', () => loadAndDisplayList(button.dataset.list, button));
-            });
-            searchInput.addEventListener('input', () => {
-                currentPage = 1; // Reset to first page on new search
-                renderTable();
-            });
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) currentYearElement.textContent = new Date().getFullYear();
+            if(lightModeButton) lightModeButton.addEventListener('click', () => applyTheme('light'));
+            if(darkModeButton) darkModeButton.addEventListener('click', () => applyTheme('dark'));
+            if(randomModeButton) randomModeButton.addEventListener('click', () => applyTheme('random'));
+            const savedTheme = localStorage.getItem('theme') || 'light'; applyTheme(savedTheme);
+            const savedViewMode = localStorage.getItem('viewMode') || 'table';
+            setViewMode(savedViewMode);
 
-            [detailsModal.querySelector('#closeModalButton'), detailsModal.querySelector('#modalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideDetailsModal));
-            detailsModal.addEventListener('click', (event) => { if (event.target === detailsModal) hideDetailsModal(); });
-
-            document.getElementById('openRecommendationModalButton').addEventListener('click', showRecommendationModal);
-            [recommendationModal.querySelector('#closeRecommendationModalButton'), recommendationModal.querySelector('#recommendationModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideRecommendationModal));
-            recommendationModal.addEventListener('click', (event) => { if (event.target === recommendationModal) hideRecommendationModal(); });
+            listButtons.forEach(button => { 
+                button.addEventListener('click', () => {
+                    if (button.dataset.list === 'stats') {
+                        handleStatsButtonClick(button);
+                    } else {
+                        loadAndDisplayList(button.dataset.list, button);
+                    }
+                });
+            });
+            searchInput.addEventListener('input', () => { currentPage = 1; renderMedia(); });
             
-            document.getElementById('openFaqModalButton').addEventListener('click', showFaqModal);
-            [faqModal.querySelector('#closeFaqModalButton'), faqModal.querySelector('#faqModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideFaqModal));
-            faqModal.addEventListener('click', (event) => { if (event.target === faqModal) hideFaqModal(); });
+            startYearInputElement.addEventListener('input', () => {
+                startYearFilter = startYearInputElement.value; currentPage = 1; renderMedia();
+            });
+            endYearInputElement.addEventListener('input', () => {
+                endYearFilter = endYearInputElement.value; currentPage = 1; renderMedia();
+            });
+            resetFiltersButton.addEventListener('click', () => {
+                searchInput.value = ''; selectedGenres.clear(); 
+                document.querySelectorAll('#genreCheckboxContainer input[type="checkbox"]').forEach(cb => cb.checked = false);
+                startYearInputElement.value = ''; startYearFilter = '';
+                endYearInputElement.value = ''; endYearFilter = '';
+                sortColumnKey = null; sortDirection = 'asc';
+                currentPage = 1; renderMedia();
+            });
+
+            if(tableViewButton) tableViewButton.addEventListener('click', () => setViewMode('table'));
+            if(cardViewButton) cardViewButton.addEventListener('click', () => setViewMode('card'));
+
+            if(randomPickButton) randomPickButton.addEventListener('click', handleRandomPick);
+            
+            [detailsModalElement.querySelector('#closeModalButton'), detailsModalElement.querySelector('#modalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideDetailsModal));
+            detailsModalElement.addEventListener('click', (event) => { if (event.target === detailsModalElement) hideDetailsModal(); });
+            document.getElementById('openRecommendationModalButton').addEventListener('click', showRecommendationModal);
+            [recommendationModalElement.querySelector('#closeRecommendationModalButton'), recommendationModalElement.querySelector('#recommendationModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideRecommendationModal));
+            recommendationModalElement.addEventListener('click', (event) => { if (event.target === recommendationModalElement) hideRecommendationModal(); });
+            if (openFaqModalButton) openFaqModalButton.addEventListener('click', showFaqModal);
+            [faqModalElement.querySelector('#closeFaqModalButton'), faqModalElement.querySelector('#faqModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideFaqModal));
+            faqModalElement.addEventListener('click', (event) => { if (event.target === faqModalElement) hideFaqModal(); });
+            if (openChangelogModalButton) openChangelogModalButton.addEventListener('click', showChangelogModal);
+            [changelogModalElement.querySelector('#closeChangelogModalButton'), changelogModalElement.querySelector('#changelogModalCloseButtonFooter')].forEach(btn => btn.addEventListener('click', hideChangelogModal));
+            changelogModalElement.addEventListener('click', (event) => { if (event.target === changelogModalElement) hideChangelogModal(); });
+
+            tableBodyElement.innerHTML = `<tr><td class="text-center text-gray-500 py-4" colspan="1">Select a category to view.</td></tr>`;
+            cardDisplayContainer.innerHTML = `<p class="text-center text-gray-500 py-4" style="color: var(--text-secondary);">Select a category to view.</p>`;
+            disableGenreFilter(); 
         });
+        
+        // --- View Mode Function ---
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            localStorage.setItem('viewMode', mode);
+            if (currentListType === 'stats') { 
+                tableDisplayContainer.classList.add('hidden');
+                cardDisplayContainer.classList.add('hidden');
+                statsDisplayContainer.classList.remove('hidden');
+                filterControlsContainer.classList.add('hidden'); 
+                tableViewButton.classList.remove('active-view'); 
+                cardViewButton.classList.remove('active-view');
+            } else if (mode === 'table') {
+                tableDisplayContainer.classList.remove('hidden');
+                cardDisplayContainer.classList.add('hidden');
+                statsDisplayContainer.classList.add('hidden');
+                filterControlsContainer.classList.remove('hidden'); 
+                tableViewButton.classList.add('active-view');
+                cardViewButton.classList.remove('active-view');
+            } else { // card mode
+                tableDisplayContainer.classList.add('hidden');
+                cardDisplayContainer.classList.remove('hidden');
+                statsDisplayContainer.classList.add('hidden');
+                filterControlsContainer.classList.remove('hidden'); 
+                tableViewButton.classList.remove('active-view');
+                cardViewButton.classList.add('active-view');
+            }
+            renderMedia(); 
+        }
 
         // --- Core Functions ---
-        async function fetchCSVData(url, listType) {
-            console.log(`Fetching CSV from: ${url} for listType: ${listType}`);
+        async function fetchCSVData(url, listType) { 
+             console.log(`Fetching CSV from: ${url} for listType: ${listType}`);
             try {
                 const response = await fetch(url, { cache: "no-store" });
-                if (!response.ok) {
-                    const errorText = `HTTP error! Status: ${response.status}. URL: ${url}.`;
-                    console.error(errorText);
-                    if (window.location.protocol === "file:") {
-                        console.warn("Fetching external resources from 'file://' protocol is often blocked by browser CORS policy. Try using a local web server.");
-                    }
-                    throw new Error(errorText);
-                }
+                if (!response.ok) { const errorText = `HTTP error! Status: ${response.status}. URL: ${url}.`; throw new Error(errorText); }
                 const csvText = await response.text();
-                console.log(`Successfully fetched CSV data from ${url}. Raw length: ${csvText.length}`);
-                if (!csvText || csvText.trim() === "") {
-                    console.warn(`CSV file from ${url} is empty or contains only whitespace.`);
-                    return [];
-                }
+                if (!csvText || csvText.trim() === "") return { headers: [], data: [] };
                 return parseCSV(csvText, listType);
             } catch (error) {
                 console.error("Error in fetchCSVData for " + url, error);
-                tableHeadElement.innerHTML = '';
-                tableBodyElement.innerHTML = `<tr><td colspan="1" class="text-center text-red-600 font-semibold py-4">Error loading data for ${currentListTitle}: ${error.message}. Check console, ensure CSV link is public & correctly outputs CSV, and verify network. If running locally, use a web server.</td></tr>`;
-                itemCountElement.textContent = '';
-                paginationControlsElement.innerHTML = '';
-                return [];
+                const displayArea = currentViewMode === 'table' ? tableBodyElement : (currentViewMode === 'card' ? cardDisplayContainer : statsDisplayContainer);
+                if (currentListType === listType || !currentListType || currentListType === 'stats') { 
+                    if(currentViewMode === 'table' && listType !== 'stats') tableHeadElement.innerHTML = ''; 
+                    displayArea.innerHTML = currentViewMode === 'table' && listType !== 'stats' ? `<tr><td colspan="1" class="text-center text-red-600 font-semibold py-4">Error loading data: ${error.message}. Check console.</td></tr>` : `<p class="text-center text-red-600 font-semibold py-4">Error loading data for ${listType}: ${error.message}. Check console.</p>`;
+                    if(listType !== 'stats') {
+                        itemCountElement.textContent = ''; paginationControlsElement.innerHTML = '';
+                        disableGenreFilter(); disableYearFilters();
+                    }
+                }
+                return { headers: [], data: [] }; 
             }
         }
-
-        function parseCSV(csvText, listType) {
-            console.log(`Parsing CSV for listType: ${listType}. First 100 chars: ${csvText.substring(0,100)}`);
+        function parseCSV(csvText, listType) { 
             const lines = csvText.trim().split(/\r\n|\n/).filter(line => line.trim() !== '');
-            
-            if (lines.length === 0) {
-                console.warn("CSV is effectively empty after trimming and filtering empty lines.");
-                return [];
-            }
-
-            let csvHeadersFromActualFile;
-            let dataLines;
-            const isMovieList = listType === 'movies';
-
-            const firstLineClean = lines[0].trim().replace(/^"|"$/g, '').toLowerCase();
-
+            if (lines.length === 0) return { headers: [], data: [] };
+            let detectedHeaders; let dataLines; const isMovieList = listType === 'movies';
+            const firstLineClean = lines[0].trim().replace(/^"|"$/g, ''); const firstLineLower = firstLineClean.toLowerCase();
             if (isMovieList) {
-                // Check if the first line of the movie CSV is likely a header or just data
-                // A simple check: if it's not 'titles' or 'title' and has no commas, assume headerless
-                if (!firstLineClean.includes(',') && firstLineClean !== 'titles' && firstLineClean !== 'title') {
-                    console.log("Movie list CSV assumed headerless (single column, first line not 'Titles'/'Title'). Using 'titles' as implicit key.");
-                    csvHeadersFromActualFile = ['titles']; // This is the key we'll use for the data object
-                    dataLines = lines;    // All lines are data
-                } else {
-                    console.log("Movie list CSV has a header row (expected 'Titles', 'Year', etc. OR just 'Titles' or 'Title').");
-                    csvHeadersFromActualFile = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+                if ((firstLineLower === 'titles' || firstLineLower === 'title') && !firstLineClean.includes(',')) {
+                    detectedHeaders = ['Titles']; dataLines = lines.slice(1);
+                } else if (!firstLineClean.includes(',')) { 
+                    detectedHeaders = ['Titles']; dataLines = lines; 
+                } else { 
+                    detectedHeaders = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
                     dataLines = lines.slice(1);
                 }
-            } else {
-                if (lines.length < 1) { console.warn(`CSV for ${listType} has no header line.`); return []; }
-                csvHeadersFromActualFile = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            } else { 
+                detectedHeaders = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
                 dataLines = lines.slice(1);
             }
-            
-            console.log("Effective CSV Headers for parsing:", csvHeadersFromActualFile);
-            const data = [];
-
-            dataLines.forEach((line, lineIndex) => {
+            const parsedData = []; const dataKeys = detectedHeaders.map(h => headerToKey(h)); 
+            dataLines.forEach((line) => {
                 if (!line.trim()) return;
-
-                const values = [];
-                let currentField = '';
-                let inQuotes = false;
+                const values = []; let currentField = ''; let inQuotes = false;
                 for (let j = 0; j < line.length; j++) {
                     const char = line[j];
                     if (char === '"') {
-                        if (inQuotes && j + 1 < line.length && line[j+1] === '"') {
-                            currentField += '"'; j++; 
-                        } else {
-                            inQuotes = !inQuotes;
-                        }
+                        if (inQuotes && j + 1 < line.length && line[j+1] === '"') { currentField += '"'; j++; } 
+                        else { inQuotes = !inQuotes; }
                     } else if (char === ',' && !inQuotes) {
-                        values.push(currentField); currentField = '';
-                    } else {
-                        currentField += char;
-                    }
+                        values.push(currentField.trim()); currentField = '';
+                    } else { currentField += char; }
                 }
-                values.push(currentField); 
-
-                if (values.length === csvHeadersFromActualFile.length) {
+                values.push(currentField.trim()); 
+                if (values.length === detectedHeaders.length) {
                     const rowObject = {};
-                    csvHeadersFromActualFile.forEach((header, index) => {
-                        let keyToUse = headerToKey(header);
-                        // Ensure movie titles are stored under 'titles' key internally for consistency
-                        if (isMovieList && (keyToUse === 'title' || csvHeadersFromActualFile.length === 1)) {
-                           keyToUse = 'titles';
-                        }
-                        rowObject[keyToUse] = values[index].trim().replace(/^"|"$/g, '');
+                    dataKeys.forEach((key, index) => {
+                        let keyToUse = (isMovieList && (key === 'titles' || key === 'title' || dataKeys.length === 1)) ? 'titles' : key;
+                        rowObject[keyToUse] = values[index].replace(/^"|"$/g, '');
                     });
-                    data.push(rowObject);
-                } else {
-                    const actualLineNumber = lineIndex + (isMovieList && csvHeadersFromActualFile[0] === 'titles' && dataLines === lines ? 1 : 2);
-                    console.warn(`Skipping malformed CSV line ${actualLineNumber} for ${listType}: Expected ${csvHeadersFromActualFile.length} fields, got ${values.length}. Line: "${line}"`);
+                    parsedData.push(rowObject);
                 }
             });
-            console.log(`Parsed ${data.length} data rows for ${listType}. First item:`, data[0]);
-            return data;
+            return { headers: detectedHeaders, data: parsedData };
         }
         
         async function loadAndDisplayList(listType, buttonElement = null) {
             if (buttonElement) setActiveButton(buttonElement);
-            currentListType = listType;
-            currentPage = 1; // Reset to first page
-            setTableLoadingState(true);
-            itemCountElement.textContent = ''; 
+            currentListType = listType; currentPage = 1; selectedGenres.clear(); 
+            sortColumnKey = null; sortDirection = 'asc';
+            startYearFilter = ""; endYearFilter = ""; 
+            startYearInputElement.value = ""; endYearInputElement.value = "";
 
-            console.log(`Loading data for: ${listType}`);
-            const data = await fetchCSVData(CSV_URLS[listType], listType); 
-            allDataCache[currentListType] = data; 
+            const listTypeTitles = { movies: "Movies", tvshows: "TV Shows", cartoons: "Cartoons", anime: "Anime", stats: "Statistics" };
+            currentListTitle = listTypeTitles[listType] || "Selected List"; 
             
-            switch (listType) {
-                case 'movies':
-                    currentHeaders = ['Titles']; 
-                    currentListTitle = 'Movies';
-                    break;
-                case 'tvshows':
-                    currentHeaders = ['Title', 'Genre(s)', 'Years Aired'];
-                    currentListTitle = 'TV Shows';
-                    break;
-                case 'cartoons':
-                    currentHeaders = ['Title', 'Genre(s)', 'Years Aired', 'Country of Origin'];
-                    currentListTitle = 'Cartoons';
-                    break;
-                case 'anime':
-                    currentHeaders = ['Title', 'Genre(s)', 'Years Aired', 'Content Rating'];
-                    currentListTitle = 'Anime';
-                    break;
+            if (listType === 'stats') { 
+                await displayStatistics(buttonElement); 
+            } else {
+                setTableLoadingState(true); 
+                itemCountElement.textContent = ''; 
+                const { headers: fetchedHeaders, data: fetchedData } = await fetchCSVData(CSV_URLS[listType], listType);
+                allDataCache[listType] = { headers: fetchedHeaders, data: fetchedData }; 
+                currentHeaders = fetchedHeaders; 
+                currentDataKeys = currentHeaders.map(h => headerToKey(h)); 
+                populateGenreFilter(); 
+                enableOrDisableYearFilters(); 
+                setTableLoadingState(false); 
+                setViewMode(localStorage.getItem('viewMode') || 'table'); 
             }
-            setTableLoadingState(false); 
-            renderTable(); 
+        }
+
+        function populateGenreFilter() { 
+            genreCheckboxContainerElement.innerHTML = ''; 
+            genrePlaceholderElement.style.display = 'block'; 
+            if (!currentListType || !allDataCache[currentListType] || !allDataCache[currentListType].data) {
+                disableGenreFilter(); return;
+            }
+            const listCache = allDataCache[currentListType];
+            const data = listCache.data; const headers = listCache.headers; 
+            if (!data || data.length === 0) { disableGenreFilter(); return; }
+            const genreHeader = headers.find(h => headerToKey(h).includes('genre'));
+            if (!genreHeader) { disableGenreFilter(); return; }
+            const genreKey = headerToKey(genreHeader);
+            const allGenres = new Set();
+            data.forEach(item => {
+                if (item && item[genreKey]) {
+                    const genres = String(item[genreKey]).split(',').map(g => g.trim().toLowerCase()); 
+                    genres.forEach(g => { if (g) allGenres.add(g); });
+                }
+            });
+            if (allGenres.size === 0) { disableGenreFilter(); return; }
+            genrePlaceholderElement.style.display = 'none'; 
+            const sortedGenres = Array.from(allGenres).sort((a, b) => a.localeCompare(b));
+            sortedGenres.forEach(genre => {
+                const checkboxId = `genre-${genre.replace(/\s+/g, '-')}`; 
+                const label = document.createElement('label');
+                label.htmlFor = checkboxId; label.className = "flex items-center space-x-2 cursor-pointer"; 
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox'; checkbox.id = checkboxId; checkbox.value = genre;
+                checkbox.className = "form-checkbox h-4 w-4 rounded"; checkbox.style.accentColor = 'var(--text-accent)';
+                checkbox.addEventListener('change', (event) => {
+                    if (event.target.checked) { selectedGenres.add(event.target.value); } 
+                    else { selectedGenres.delete(event.target.value); }
+                    currentPage = 1; renderMedia();
+                });
+                const textNode = document.createTextNode(genre.charAt(0).toUpperCase() + genre.slice(1)); 
+                label.appendChild(checkbox); label.appendChild(textNode);
+                genreCheckboxContainerElement.appendChild(label);
+            });
+        }
+        function disableGenreFilter() { 
+            genreCheckboxContainerElement.innerHTML = ''; 
+            genrePlaceholderElement.textContent = 'No genres available for this list or list type.';
+            genrePlaceholderElement.style.display = 'block';
+            selectedGenres.clear();
+        }
+        function enableOrDisableYearFilters() { 
+            const yearKey = currentDataKeys.find(key => key.includes('year') || key.includes('aired'));
+            if (yearKey && currentListType && currentListType !== 'movies' && currentListType !== 'stats') { 
+                startYearInputElement.disabled = false; endYearInputElement.disabled = false;
+            } else {
+                startYearInputElement.disabled = true; endYearInputElement.disabled = true;
+                startYearInputElement.value = ""; endYearInputElement.value = "";
+                startYearFilter = ""; endYearFilter = "";
+            }
         }
         
-        function setTableLoadingState(isLoading) {
+        function setTableLoadingState(isLoading) { 
+            const displayArea = currentViewMode === 'table' ? tableBodyElement : cardDisplayContainer;
             if (isLoading) {
-                tableHeadElement.innerHTML = '';
-                tableBodyElement.innerHTML = `<tr><td colspan="1" class="text-center py-4"><div class="loader"></div><p class="text-gray-500">Loading data...</p></td></tr>`;
-                paginationControlsElement.innerHTML = ''; // Clear pagination while loading
-                if(initialMessageCell) initialMessageCell.style.display = 'none';
-            } else {
-                 if(initialMessageCell) initialMessageCell.style.display = 'none';
+                if(currentViewMode === 'table' && currentListType !== 'stats') tableHeadElement.innerHTML = '';
+                displayArea.innerHTML = currentViewMode === 'table' && currentListType !== 'stats' ? 
+                    `<tr><td colspan="1" class="text-center py-4"><div class="loader"></div><p style="color: var(--text-secondary);">Loading data for ${currentListTitle}... Please wait.</p></td></tr>` :
+                    `<div class="text-center py-4"><div class="loader"></div><p style="color: var(--text-secondary);">Loading data for ${currentListTitle}... Please wait.</p></div>`;
+                paginationControlsElement.innerHTML = ''; 
+                disableGenreFilter(); 
+                enableOrDisableYearFilters(); 
             }
         }
-
-        function setActiveButton(activeBtn) {
+        function setActiveButton(activeBtn) { 
             listButtons.forEach(btn => {
-                btn.classList.remove('ring-2', 'ring-offset-2', 'ring-indigo-500', 'ring-teal-500', 'ring-amber-500', 'ring-rose-500');
+                btn.classList.remove('ring-2', 'ring-offset-2', 'active', 'opacity-100');
+                ['ring-indigo-500', 'ring-teal-500', 'ring-amber-500', 'ring-rose-500', 'ring-purple-500', 
+                 'bg-indigo-700', 'bg-teal-700', 'bg-amber-700', 'bg-rose-700', 'bg-purple-700' 
+                ].forEach(cls => btn.classList.remove(cls));
+                btn.classList.add('opacity-75', 'hover:opacity-100'); 
+                
+                const listType = btn.dataset.list;
+                if (listType === 'movies') btn.style.backgroundColor = 'var(--button-movies-bg)';
+                else if (listType === 'tvshows') btn.style.backgroundColor = 'var(--button-tvshows-bg)';
+                else if (listType === 'cartoons') btn.style.backgroundColor = 'var(--button-cartoons-bg)';
+                else if (listType === 'anime') btn.style.backgroundColor = 'var(--button-anime-bg)';
+                else if (listType === 'stats') btn.style.backgroundColor = 'var(--button-stats-bg)';
+
                 if (btn === activeBtn) {
-                    btn.classList.add('ring-2', 'ring-offset-2');
-                    const listType = btn.dataset.list;
-                    if (listType === 'movies') btn.classList.add('ring-indigo-500');
-                    else if (listType === 'tvshows') btn.classList.add('ring-teal-500');
-                    else if (listType === 'cartoons') btn.classList.add('ring-amber-500');
-                    else if (listType === 'anime') btn.classList.add('ring-rose-500');
+                    btn.classList.add('active', 'ring-2', 'ring-offset-2', 'opacity-100');
+                    btn.classList.remove('opacity-75'); 
+                    if (listType === 'movies') { btn.classList.add('ring-indigo-500'); btn.style.backgroundColor = 'var(--button-movies-hover-bg)';}
+                    else if (listType === 'tvshows') { btn.classList.add('ring-teal-500'); btn.style.backgroundColor = 'var(--button-tvshows-hover-bg)';}
+                    else if (listType === 'cartoons') { btn.classList.add('ring-amber-500'); btn.style.backgroundColor = 'var(--button-cartoons-hover-bg)';}
+                    else if (listType === 'anime') { btn.classList.add('ring-rose-500'); btn.style.backgroundColor = 'var(--button-anime-hover-bg)';}
+                    else if (listType === 'stats') { btn.classList.add('ring-purple-500'); btn.style.backgroundColor = 'var(--button-stats-hover-bg)';}
                 }
             });
         }
-        
-        function renderTable() {
-            listTitleElement.textContent = currentListTitle;
-            tableHeadElement.innerHTML = '';
-            tableBodyElement.innerHTML = ''; 
-            itemCountElement.textContent = '';
-            if(initialMessageCell) initialMessageCell.style.display = 'none';
+        function handleSort(clickedHeaderKey) { 
+            if (sortColumnKey === clickedHeaderKey) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else { sortColumnKey = clickedHeaderKey; sortDirection = 'asc'; }
+            currentPage = 1; renderMedia();
+        }
 
-            if (!currentListType) {
-                tableBodyElement.innerHTML = `<tr><td class="text-center text-gray-500 py-4" colspan="1">Select a category to view.</td></tr>`;
-                paginationControlsElement.innerHTML = '';
-                return;
+        function renderMedia() { 
+            listTitleElement.textContent = currentListTitle;
+            itemCountElement.textContent = '';
+            paginationControlsElement.innerHTML = ''; 
+
+            tableDisplayContainer.classList.add('hidden');
+            cardDisplayContainer.classList.add('hidden');
+            statsDisplayContainer.classList.add('hidden');
+            filterControlsContainer.classList.add('hidden'); 
+
+            if (currentListType === 'stats') {
+                statsDisplayContainer.classList.remove('hidden');
+                // displayStatistics will handle its content, called from loadAndDisplayList
+                return; 
             }
             
-            const dataForCurrentList = allDataCache[currentListType] || [];
+            filterControlsContainer.classList.remove('hidden'); 
+            const displayArea = currentViewMode === 'table' ? tableBodyElement : cardDisplayContainer;
+            if(currentViewMode === 'table') {
+                tableHeadElement.innerHTML = '';
+                tableDisplayContainer.classList.remove('hidden');
+            } else {
+                cardDisplayContainer.classList.remove('hidden');
+            }
+            displayArea.innerHTML = '';
 
-            if (tableBodyElement.querySelector('.text-red-600')) {
-                paginationControlsElement.innerHTML = '';
-                return; 
+
+            if (!currentListType || !allDataCache[currentListType] || !allDataCache[currentListType].data) {
+                 displayArea.innerHTML = currentViewMode === 'table' ? 
+                    `<tr><td class="text-center py-4" colspan="1" style="color: var(--text-secondary);">Select a category to view.</td></tr>` :
+                    `<p class="text-center py-4" style="color: var(--text-secondary);">Select a category to view.</p>`;
+                disableGenreFilter(); enableOrDisableYearFilters(); return;
+            }
+            
+            let dataToProcess = [...(allDataCache[currentListType].data || [])]; 
+
+            if (displayArea.querySelector('.text-red-600')) { 
+                disableGenreFilter(); enableOrDisableYearFilters(); return; 
             }
 
             const searchTerm = searchInput.value.toLowerCase();
-            currentFilteredData = dataForCurrentList.filter(item => {
-                if (!item || typeof item !== 'object') return false;
-                if (!searchTerm) return true; 
-                return Object.values(item).some(value => 
-                    String(value).toLowerCase().includes(searchTerm)
+            if (searchTerm) {
+                dataToProcess = dataToProcess.filter(item => 
+                    Object.values(item).some(value => String(value).toLowerCase().includes(searchTerm))
                 );
-            });
+            }
 
-            if (currentFilteredData.length === 0 && dataForCurrentList.length > 0 && searchTerm) {
-                 const colSpan = currentHeaders.length > 0 ? currentHeaders.length : 1;
-                tableBodyElement.innerHTML = `<tr><td colspan="${colSpan}" class="text-center text-gray-500 py-4">No items match your search.</td></tr>`;
-                itemCountElement.textContent = `Showing 0 of ${dataForCurrentList.length} items.`;
-                paginationControlsElement.innerHTML = '';
-                return;
+            if (selectedGenres.size > 0) {
+                const genreKey = currentDataKeys.find(key => key.includes('genre'));
+                if (genreKey) {
+                    dataToProcess = dataToProcess.filter(item => {
+                        if (item && item[genreKey]) {
+                            const itemGenres = String(item[genreKey]).toLowerCase().split(',').map(g => g.trim());
+                            return Array.from(selectedGenres).some(selGenre => itemGenres.includes(selGenre.toLowerCase()));
+                        }
+                        return false;
+                    });
+                }
             }
             
-            if (currentFilteredData.length === 0 && dataForCurrentList.length === 0) {
-                 const colSpan = currentHeaders.length > 0 ? currentHeaders.length : 1;
-                tableBodyElement.innerHTML = `<tr><td colspan="${colSpan}" class="text-center text-gray-500 py-4">No ${currentListTitle.toLowerCase()} data found. Ensure CSV is populated, public, correctly formatted, and the link is valid.</td></tr>`;
-                paginationControlsElement.innerHTML = '';
+            const yearHeaderKey = currentDataKeys.find(key => key.includes('year') || key.includes('aired'));
+            if (yearHeaderKey && (startYearFilter || endYearFilter)) {
+                dataToProcess = dataToProcess.filter(item => {
+                    const yearValue = String(item[yearHeaderKey] || ''); if (!yearValue) return false;
+                    let itemStartYear, itemEndYear;
+                    if (yearValue.includes('-')) { 
+                        const parts = yearValue.split('-'); itemStartYear = parseInt(parts[0].trim());
+                        itemEndYear = parts[1].trim().toLowerCase() === 'present' ? new Date().getFullYear() : parseInt(parts[1].trim());
+                        if (isNaN(itemEndYear)) itemEndYear = itemStartYear; 
+                    } else { itemStartYear = itemEndYear = parseInt(yearValue.trim()); }
+                    if (isNaN(itemStartYear)) return false; 
+                    const filterStart = startYearFilter ? parseInt(startYearFilter) : -Infinity;
+                    const filterEnd = endYearFilter ? parseInt(endYearFilter) : Infinity;
+                    return itemStartYear <= filterEnd && itemEndYear >= filterStart;
+                });
+            }
+
+            if (sortColumnKey) { 
+                dataToProcess.sort((a, b) => {
+                    let valA = a[sortColumnKey] || ''; let valB = b[sortColumnKey] || '';
+                    if (sortColumnKey.includes('year') || sortColumnKey.includes('aired')) {
+                        const yearA = parseInt(String(valA).split('-')[0].trim()); 
+                        const yearB = parseInt(String(valB).split('-')[0].trim());
+                        if (!isNaN(yearA) && !isNaN(yearB)) return sortDirection === 'asc' ? yearA - yearB : yearB - yearA;
+                    }
+                    valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase();
+                    if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+            }
+            currentFilteredData = dataToProcess; 
+            
+            const colSpanForMessages = currentHeaders.length > 0 ? currentHeaders.length : 1;
+
+            if (currentViewMode === 'table' && currentHeaders.length > 0) {
+                const headerRow = tableHeadElement.insertRow();
+                currentHeaders.forEach((headerText, index) => {
+                    const th = document.createElement('th');
+                    th.className = 'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider';
+                    th.textContent = headerText; 
+                    const headerKey = currentDataKeys[index];
+                    th.onclick = () => handleSort(headerKey); 
+                    if (sortColumnKey === headerKey) {
+                        const indicator = document.createElement('span');
+                        indicator.className = 'sort-indicator';
+                        indicator.textContent = sortDirection === 'asc' ? '▲' : '▼';
+                        th.appendChild(indicator);
+                    }
+                    headerRow.appendChild(th);
+                });
+            } else if (currentViewMode === 'table' && currentFilteredData.length > 0 && currentHeaders.length === 0) { 
+                displayArea.innerHTML = `<tr><td colspan="1" class="text-center py-4" style="color: var(--text-secondary);">Table headers are missing.</td></tr>`;
                 return;
             }
-            
-            const headerRow = tableHeadElement.insertRow();
-            currentHeaders.forEach(headerText => {
-                const th = document.createElement('th');
-                th.className = 'px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
-                th.textContent = headerText; 
-                headerRow.appendChild(th);
-            });
+
+            if (currentFilteredData.length === 0) {
+                const noResultsMessage = (allDataCache[currentListType].data.length > 0 && (searchTerm || selectedGenres.size > 0 || startYearFilter || endYearFilter)) ?
+                    `No items match your search/filter criteria.` :
+                    `No ${currentListTitle.toLowerCase()} data found.`;
+                displayArea.innerHTML = currentViewMode === 'table' ?
+                    `<tr><td colspan="${colSpanForMessages}" class="text-center py-4" style="color: var(--text-secondary);">${noResultsMessage}</td></tr>` :
+                    `<p class="text-center py-4" style="color: var(--text-secondary);">${noResultsMessage}</p>`;
+                itemCountElement.textContent = `Showing 0 of ${allDataCache[currentListType].data.length} items.`;
+                return;
+            }
             
             const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
             const endIndex = startIndex + ITEMS_PER_PAGE;
             const paginatedData = currentFilteredData.slice(startIndex, endIndex);
 
-            if (paginatedData.length > 0) {
+            if (currentViewMode === 'table') {
                 paginatedData.forEach(item => {
                     if (!item || typeof item !== 'object') return; 
                     const row = tableBodyElement.insertRow();
-                    currentHeaders.forEach(header => {
+                    currentDataKeys.forEach((key, index) => { 
                         const cell = row.insertCell();
-                        cell.className = 'px-4 py-3 whitespace-nowrap text-sm text-gray-700';
-                        const key = headerToKey(header); 
-                        const value = item[key] || '';
-                        
-                        if (header === currentHeaders[0]) { 
-                            cell.textContent = value;
-                            cell.classList.add('clickable-title');
-                            cell.onclick = () => showItemDetails(item);
-                        } else {
-                            cell.textContent = value;
-                        }
+                        cell.className = 'px-4 py-3 whitespace-nowrap text-sm';
+                        cell.style.color = 'var(--text-secondary)';
+                        let value = item[key] || ''; 
+                        const isTitleColumn = (currentListType === 'movies' && key === 'titles') || (currentListType !== 'movies' && index === 0);
+                        if (isTitleColumn) { 
+                            cell.textContent = value; cell.classList.add('clickable-title'); 
+                            cell.onclick = () => showItemDetails(item, currentHeaders, currentDataKeys); 
+                        } else { cell.textContent = value; }
                     });
                 });
-            } else if (currentFilteredData.length > 0 && currentPage > 1) { // On a page with no items but there are items in total
-                currentPage = 1; // Go back to first page
-                renderTable(); // Re-render
-                return;
+            } else { // Card View
+                paginatedData.forEach(item => {
+                    if (!item || typeof item !== 'object') return;
+                    const card = document.createElement('div');
+                    card.className = 'media-card';
+                    card.onclick = () => showItemDetails(item, currentHeaders, currentDataKeys);
+                    const content = document.createElement('div');
+                    content.className = 'media-card-content';
+                    const titleElement = document.createElement('h3');
+                    titleElement.className = 'media-card-title';
+                    const titleKey = (currentListType === 'movies' && item.titles) ? 'titles' : currentDataKeys[0];
+                    titleElement.textContent = item[titleKey] || 'N/A';
+                    content.appendChild(titleElement);
+                    let detailsCount = 0;
+                    for(let i = 0; i < currentHeaders.length && detailsCount < 2; i++) {
+                        const headerText = currentHeaders[i];
+                        const dataKey = currentDataKeys[i];
+                        if (dataKey !== titleKey) { 
+                            const detailP = document.createElement('p');
+                            detailP.className = 'media-card-detail';
+                            detailP.innerHTML = `<strong style="color:var(--text-primary);">${headerText}:</strong> ${item[dataKey] || 'N/A'}`;
+                            content.appendChild(detailP);
+                            detailsCount++;
+                        }
+                    }
+                    card.appendChild(content);
+                    cardDisplayContainer.appendChild(card);
+                });
             }
             
-            itemCountElement.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, currentFilteredData.length)} of ${currentFilteredData.length} items. (Total in list: ${dataForCurrentList.length})`;
+            itemCountElement.textContent = `Showing ${currentFilteredData.length > 0 ? startIndex + 1 : 0}-${Math.min(endIndex, currentFilteredData.length)} of ${currentFilteredData.length} items. (Total in source list: ${allDataCache[currentListType].data.length})`;
             renderPaginationControls();
         }
 
-        function renderPaginationControls() {
-            paginationControlsElement.innerHTML = '';
+
+        function renderPaginationControls() { 
+            paginationControlsElement.innerHTML = ''; 
             if (!currentFilteredData || currentFilteredData.length === 0) return;
-
             const totalPages = Math.ceil(currentFilteredData.length / ITEMS_PER_PAGE);
-            if (totalPages <= 1) return; // No need for controls if only one page
-
+            if (totalPages <= 1) return; 
             const prevButton = document.createElement('button');
-            prevButton.textContent = 'Previous';
-            prevButton.className = 'pagination-btn bg-gray-300 hover:bg-gray-400 text-gray-800';
+            prevButton.textContent = 'Previous'; prevButton.className = 'pagination-btn prev-btn'; 
             prevButton.disabled = currentPage === 1;
-            prevButton.onclick = () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderTable();
-                }
-            };
-
+            prevButton.onclick = () => { if (currentPage > 1) { currentPage--; renderMedia(); } }; 
             const nextButton = document.createElement('button');
-            nextButton.textContent = 'Next';
-            nextButton.className = 'pagination-btn bg-indigo-500 hover:bg-indigo-600 text-white';
+            nextButton.textContent = 'Next'; nextButton.className = 'pagination-btn next-btn'; 
             nextButton.disabled = currentPage === totalPages;
-            nextButton.onclick = () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderTable();
-                }
-            };
-            
+            nextButton.onclick = () => { if (currentPage < totalPages) { currentPage++; renderMedia(); } }; 
             const pageInfo = document.createElement('span');
-            pageInfo.className = 'text-sm text-gray-700';
+            pageInfo.className = 'text-sm'; pageInfo.style.color = 'var(--text-secondary)';
             pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-
             paginationControlsElement.appendChild(prevButton);
             paginationControlsElement.appendChild(pageInfo);
             paginationControlsElement.appendChild(nextButton);
         }
-
-
-        function headerToKey(headerText) {
-            if (!headerText) return '';
-            return headerText.toLowerCase().replace(/[^a-z0-9]/gi, '');
+        function headerToKey(headerText) { 
+            if (!headerText || typeof headerText !== 'string') return '';
+            return headerText.toLowerCase().replace(/[^a-z0-9\s_]/gi, '').replace(/\s+/g, '_');
         }
-        
-        function showModal(modalElement, modalContentElement) {
+        function showModal(modalElement, modalContentElement) { 
             modalElement.classList.remove('hidden');
             requestAnimationFrame(() => { 
                 modalElement.classList.remove('opacity-0');
@@ -564,97 +1152,203 @@
                 modalContentElement.classList.add('opacity-100', 'scale-100');
             });
         }
-
-        function hideModal(modalElement, modalContentElement, onHideCallback) {
+        function hideModal(modalElement, modalContentElement, onHideCallback) { 
             modalContentElement.classList.add('opacity-0', 'scale-95');
             modalContentElement.classList.remove('opacity-100', 'scale-100');
             modalElement.classList.add('opacity-0');
             setTimeout(() => {
                  modalElement.classList.add('hidden');
-                 if (onHideCallback) onHideCallback();
+                 if (onHideCallback) onHideCallback(); 
             }, 300); 
         }
-
-        function showItemDetails(item) {
-            const itemTitle = item.titles || item.title || "Details"; // Prioritize 'titles' for movies
-            modalTitleElement.textContent = itemTitle;
-            modalBodyElement.innerHTML = ''; 
-
-            for (const key in item) {
-                if (Object.hasOwnProperty.call(item, key)) {
+        function showItemDetails(item, itemHeaders, itemDataKeys) { 
+            const titleKey = (item._listType === 'movies' && itemDataKeys.includes('titles')) ? 'titles' : itemDataKeys[0];
+            const itemTitle = item[titleKey] || "Details"; 
+            modalTitleDetailsElement.textContent = itemTitle;
+            modalBodyDetailsElement.innerHTML = ''; 
+            if (isPickingRandom && !itemHeaders) { 
+                 modalBodyDetailsElement.innerHTML = `<div class="loader picking-loader"></div><p class="text-lg font-semibold text-center" style="color: var(--text-primary);">Finding something great for you...</p>`;
+            } else {
+                itemHeaders.forEach((header, index) => {
+                    const key = itemDataKeys[index];
                     const value = item[key] || 'N/A';
                     const detailP = document.createElement('p');
-                    let displayName = key.replace(/([A-Z0-9])/g, ' $1').replace(/^./, str => str.toUpperCase());
-                    displayName = displayName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
-
-                    detailP.innerHTML = `<strong class="font-semibold text-gray-600">${displayName}:</strong> ${value}`;
-                    modalBodyElement.appendChild(detailP);
+                    detailP.innerHTML = `<strong class="font-semibold" style="color: var(--text-primary);">${header}:</strong> <span style="color: var(--text-secondary);">${value}</span>`;
+                    modalBodyDetailsElement.appendChild(detailP);
+                });
+            }
+            showModal(detailsModalElement, detailsModalContentElement);
+        }
+        function hideDetailsModal() { 
+            hideModal(detailsModalElement, detailsModalContentElement);
+            isPickingRandom = false; 
+        }
+        async function handleRandomPick() { 
+            if (isPickingRandom) return; isPickingRandom = true;
+            randomPickButton.disabled = true; randomPickButton.classList.add('opacity-50');
+            modalTitleDetailsElement.textContent = "Feeling Lucky ✨";
+            modalBodyDetailsElement.innerHTML = `<div class="loader picking-loader"></div><p class="text-lg font-semibold text-center" style="color: var(--text-primary);">Gathering all media... Please wait.</p>`;
+            showModal(detailsModalElement, detailsModalContentElement);
+            let allItems = [];
+            for (const listType of Object.keys(CSV_URLS)) {
+                if (!allDataCache[listType] || !allDataCache[listType].data || allDataCache[listType].data.length === 0) {
+                    const { headers: fetchedHeaders, data: fetchedData } = await fetchCSVData(CSV_URLS[listType], listType);
+                    if (fetchedData.length > 0) allDataCache[listType] = { headers: fetchedHeaders, data: fetchedData };
+                }
+                if (allDataCache[listType] && allDataCache[listType].data) {
+                    allDataCache[listType].data.forEach(item => {
+                        allItems.push({ ...item, _listType: listType, _originalHeaders: allDataCache[listType].headers });
+                    });
                 }
             }
-            showModal(detailsModal, detailsModalContent);
+            if (allItems.length === 0) {
+                modalBodyDetailsElement.innerHTML = `<p class="text-center text-red-500 font-semibold">Could not load any items. Please try loading a list first or check network.</p>`;
+                isPickingRandom = false; randomPickButton.disabled = false; randomPickButton.classList.remove('opacity-50'); return;
+            }
+            let animationInterval; let animationCount = 0; const maxAnimations = 15; const animationSpeed = 150; 
+            modalBodyDetailsElement.innerHTML = `<div class="loader picking-loader"></div><p id="randomPickTitleDisplay" class="text-lg font-semibold text-center truncate" style="color: var(--text-primary);">Picking...</p>`;
+            const titleDisplayElement = document.getElementById('randomPickTitleDisplay');
+            animationInterval = setInterval(() => {
+                const tempRandomIndex = Math.floor(Math.random() * allItems.length);
+                const tempItem = allItems[tempRandomIndex];
+                const tempTitleKey = (tempItem._listType === 'movies' && tempItem._originalHeaders.map(h => headerToKey(h)).includes('titles')) ? 
+                                     'titles' : headerToKey(tempItem._originalHeaders[0]);
+                if(titleDisplayElement) titleDisplayElement.textContent = tempItem[tempTitleKey] || "???";
+                animationCount++;
+                if (animationCount >= maxAnimations) {
+                    clearInterval(animationInterval);
+                    const randomIndex = Math.floor(Math.random() * allItems.length);
+                    const pickedItem = allItems[randomIndex];
+                    const pickedItemHeaders = pickedItem._originalHeaders;
+                    const pickedItemDataKeys = pickedItemHeaders.map(h => headerToKey(h));
+                    showItemDetails(pickedItem, pickedItemHeaders, pickedItemDataKeys); 
+                    isPickingRandom = false; randomPickButton.disabled = false; randomPickButton.classList.remove('opacity-50');
+                }
+            }, animationSpeed);
         }
-        function hideDetailsModal() { hideModal(detailsModal, detailsModalContent); }
-
-        function showRecommendationModal() {
-            recommendationFormIframe.src = RECOMMENDATION_FORM_URL;
-            showModal(recommendationModal, recommendationModalContent);
+        function showRecommendationModal() { 
+            recommendationFormIframeElement.src = RECOMMENDATION_FORM_URL;
+            showModal(recommendationModalElement, recommendationModalContentElement);
         }
         function hideRecommendationModal() { 
-            hideModal(recommendationModal, recommendationModalContent, () => {
-                recommendationFormIframe.src = "about:blank"; 
+            hideModal(recommendationModalElement, recommendationModalContentElement, () => {
+                recommendationFormIframeElement.src = "about:blank"; 
             });
         }
+        function showFaqModal() { 
+            faqModalBodyElement.innerHTML = FAQ_CONTENT; 
+            showModal(faqModalElement, faqModalContentElement); 
+        }
+        function hideFaqModal() { hideModal(faqModalElement, faqModalContentElement); }
+        function showChangelogModal() {
+            changelogModalBodyElement.innerHTML = CHANGELOG_CONTENT;
+            showModal(changelogModalElement, changelogModalContentElement);
+        }
+        function hideChangelogModal() {
+            hideModal(changelogModalElement, changelogModalContentElement);
+        }
 
-        function showFaqModal() { showModal(faqModal, faqModalContent); }
-        function hideFaqModal() { hideModal(faqModal, faqModalContent); }
+        // --- Statistics Functions ---
+        async function handleStatsButtonClick(buttonElement) {
+            if (buttonElement) setActiveButton(buttonElement);
+            currentListType = 'stats'; 
+            currentListTitle = "Media Statistics";
+            listTitleElement.textContent = currentListTitle;
+
+            tableDisplayContainer.classList.add('hidden');
+            cardDisplayContainer.classList.add('hidden');
+            filterControlsContainer.classList.add('hidden');
+            paginationControlsElement.innerHTML = '';
+            itemCountElement.textContent = '';
+            
+            statsDisplayContainer.classList.remove('hidden');
+            statsDisplayContainer.innerHTML = `<div class="text-center py-4"><div class="loader"></div><p style="color: var(--text-secondary);">Calculating statistics... Please wait.</p></div>`;
+
+            await ensureAllDataLoaded();
+            renderStatistics();
+        }
+
+        async function ensureAllDataLoaded() {
+            const promises = [];
+            for (const listKey of Object.keys(CSV_URLS)) {
+                if (!allDataCache[listKey] || !allDataCache[listKey].data || allDataCache[listKey].data.length === 0) {
+                    console.log(`Fetching ${listKey} for statistics...`);
+                    promises.push(
+                        fetchCSVData(CSV_URLS[listKey], listKey).then(result => {
+                            if (result.data.length > 0) {
+                                allDataCache[listKey] = { headers: result.headers, data: result.data };
+                            }
+                        })
+                    );
+                }
+            }
+            await Promise.all(promises);
+        }
+
+        function renderStatistics() {
+            statsDisplayContainer.innerHTML = ''; 
+
+            let totalItemsAll = 0;
+            const categoryCounts = {};
+            const allGenresOverall = new Map(); 
+
+            for (const listKey of Object.keys(CSV_URLS)) {
+                const listCache = allDataCache[listKey];
+                const count = listCache && listCache.data ? listCache.data.length : 0;
+                categoryCounts[listKey] = count;
+                totalItemsAll += count;
+
+                if (listCache && listCache.data && listCache.headers) {
+                    const genreHeader = listCache.headers.find(h => headerToKey(h).includes('genre'));
+                    if (genreHeader) {
+                        const genreKey = headerToKey(genreHeader);
+                        listCache.data.forEach(item => {
+                            if (item && item[genreKey]) {
+                                const genres = String(item[genreKey]).split(',').map(g => g.trim());
+                                genres.forEach(g => {
+                                    if (g) {
+                                        const capGenre = g.charAt(0).toUpperCase() + g.slice(1).toLowerCase();
+                                        allGenresOverall.set(capGenre, (allGenresOverall.get(capGenre) || 0) + 1);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+
+            let statsHTML = `<div class="space-y-6">`;
+            statsHTML += `<div class="stat-item">
+                            <h3 class="stat-title">Total Items Across All Categories</h3>
+                            <p class="stat-value text-3xl font-bold" style="color:var(--text-accent);">${totalItemsAll}</p>
+                         </div>`;
+            
+            statsHTML += `<div class="stat-item">
+                            <h3 class="stat-title">Items per Category:</h3>
+                            <ul class="stat-value list-disc ml-5 space-y-1">`;
+            for (const key in categoryCounts) {
+                const categoryName = key.charAt(0).toUpperCase() + key.slice(1);
+                statsHTML += `<li><strong>${categoryName}:</strong> ${categoryCounts[key]} items</li>`;
+            }
+            statsHTML += `</ul></div>`;
+
+            if (allGenresOverall.size > 0) {
+                statsHTML += `<div class="stat-item">
+                                <h3 class="stat-title">Genre Distribution (Overall):</h3>
+                                <ul class="stat-value list-disc ml-5 space-y-1 columns-2 md:columns-3 lg:columns-4">`;
+                const sortedGenres = Array.from(allGenresOverall.entries()).sort((a,b) => b[1] - a[1]); 
+                sortedGenres.forEach(([genre, count]) => {
+                    statsHTML += `<li><strong>${genre}:</strong> ${count}</li>`;
+                });
+                statsHTML += `</ul></div>`;
+            } else {
+                 statsHTML += `<div class="stat-item"><p class="stat-value">No genre data available to display distribution.</p></div>`;
+            }
+
+            statsHTML += `</div>`; 
+            statsDisplayContainer.innerHTML = statsHTML;
+        }
 
     </script>
 </body>
 </html>
-```
-I've updated the "Kumacho Movie App" on the Canvas with the pagination feature and further refinements for the movie list data handling.
-
-Here's a summary of the changes:
-
-1.  **Pagination Added**:
-    * An `ITEMS_PER_PAGE` constant is set (defaulting to 15).
-    * A `currentPage` state variable tracks the current page for the displayed list.
-    * The `renderTable` function now slices the `currentFilteredData` to display only the items for the current page.
-    * A new `renderPaginationControls` function is created:
-        * It dynamically generates "Previous" and "Next" buttons.
-        * It displays the current page number and total pages (e.g., "Page 2 of 5").
-        * Buttons are disabled appropriately (e.g., "Previous" on the first page, "Next" on the last).
-        * Clicking these buttons updates `currentPage` and re-renders the table and pagination controls.
-    * The item count message now reflects the paginated view (e.g., "Showing 16-30 of 100 items").
-    * When a new list is selected or a search term is entered, `currentPage` is reset to 1.
-
-2.  **Movie List CSV Parsing (Further Refined)**:
-    * The `parseCSV` function's logic for `isMovieList = true` (when `listType` is 'movies') has been further clarified:
-        * It first checks if the very first line of the CSV (after cleaning) is exactly "titles" or "title" (case-insensitive) AND if there are no commas on that line. If both are true, it implies a single "Titles" or "Title" header for a single column of movie names.
-        * If the above condition is NOT met (meaning the first line either contains commas indicating multiple headers, or it's not "Titles"/"Title" suggesting it's a headerless list of titles), it then checks if the first line contains *no commas at all*. If so, it assumes it's a headerless, single-column list of movie titles, and internally uses `['titles']` as the header key.
-        * Otherwise (if the first line has commas and isn't just "Titles"/"Title"), it parses the first line as multiple headers (e.g., "Titles,Year,Director,Genre").
-    * **Crucially, regardless of how the header is detected ("Titles", "Title", or headerless), the parsed movie objects will now consistently store the movie name under the `item.titles` property.** This is because `currentHeaders` for movies is set to `['Titles']`, and `headerToKey('Titles')` becomes `titles`. This standardization is key.
-
-3.  **Search Logic Update**:
-    * The search in `renderTable` now filters against *all* values in each item object (`Object.values(item).some(...)`). This means if your movie CSV has "Year", "Director", "Genre" columns, the search will include those fields even if they aren't displayed in the main table's single "Titles" column.
-
-4.  **DOM Element Caching**: I've moved the `document.getElementById` calls for frequently accessed elements to the top level of the script (outside `DOMContentLoaded`) to cache them once, which is a minor performance optimization.
-
-**Regarding the "Movies" tab still showing blank lines:**
-
-With the refined parsing and consistent use of `item.titles`, this should be much more robust.
-* **Please ensure your Movie CSV (gid=0) has "Titles" as the header in cell A1.** This is the most straightforward way for the app to understand it.
-* If it's truly just a list of movie names starting from row 1, column A, with no header at all, the "headerless" logic should kick in and still work.
-* **The key is that `renderTable` for movies expects to find data in `item.titles`.** The `parseCSV` function is now designed to ensure this happens.
-
-When you test (especially with your local server):
-* **Clear Browser Cache**: Sometimes browsers cache old versions of files or data. Try a hard refresh (Ctrl+Shift+R or Cmd+Shift+R) or clear your browser cache for `localhost`.
-* **Check Console Logs**: Open the developer console (F12). I've added more `console.log` statements in `fetchCSVData` and `parseCSV` that will show:
-    * The URL being fetched.
-    * The raw length of the fetched CSV text.
-    * The detected/effective headers for parsing.
-    * The number of data rows parsed.
-    * The first parsed item object.
-    These logs will be invaluable if the movie list still doesn't populate, as they'll show exactly what the script is "seeing" from your CSV.
-
-This version significantly overhauls the data handling and adds a major new feature (pagination). Hopefully, it resolves the movie list issue and provides a better user experien
