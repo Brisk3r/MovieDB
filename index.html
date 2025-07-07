@@ -33,19 +33,16 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #6b7280;
         }
-        /* Style for the search input */
-        .search-input:focus {
-            box-shadow: 0 0 0 2px #3b82f6;
-            border-color: #3b82f6;
-        }
-        /* Custom styles for filter buttons */
-        .filter-btn {
+        /* Style for inputs and selects */
+        .control-element {
+            background-color: #1f2937;
+            border: 1px solid #374151;
             transition: all 0.2s ease-in-out;
         }
-        .filter-btn.active {
-            background-color: #3b82f6;
-            color: white;
-            font-weight: 600;
+        .control-element:focus {
+            box-shadow: 0 0 0 2px #3b82f6;
+            border-color: #3b82f6;
+            outline: none;
         }
         /* Modal styles */
         .modal {
@@ -70,6 +67,18 @@
             width: 100%;
             height: 100%;
         }
+        /* --- Featured Slider Styles --- */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .slider-track {
+            animation: scroll 60s linear infinite;
+            will-change: transform;
+        }
+        .slider-container:hover .slider-track {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden">
@@ -83,39 +92,36 @@
             <p class="text-sm text-gray-500 mt-2">Last Updated: <span id="last-updated" class="font-semibold">Never</span></p>
         </header>
 
-        <!-- Search Input -->
-        <div class="mb-6 max-w-2xl mx-auto">
-            <input type="text" id="searchInput" placeholder="Search by title, director, creator, genre..."
-                   class="search-input w-full px-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-lg text-white placeholder-gray-500 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <!-- Featured Slider Section -->
+        <div id="featured-slider" class="w-full mb-12 hidden">
+            <h2 class="text-2xl font-bold text-white mb-4">Featured Movies & Shows</h2>
+            <div class="slider-container w-full overflow-hidden relative h-64">
+                <div id="slider-track" class="slider-track flex absolute top-0 left-0 h-full">
+                    <!-- Slider items will be injected here -->
+                </div>
+            </div>
         </div>
 
-        <!-- Filter and Sort Section -->
-        <div class="flex flex-col justify-center items-center gap-4 mb-8">
-            <!-- Type Filter Buttons -->
-            <div id="type-filter-buttons" class="flex flex-wrap justify-center gap-2">
-                <!-- Type filter buttons will be generated here by JS -->
+        <!-- Controls Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 items-center">
+            <!-- Search Input -->
+            <div class="lg:col-span-2">
+                <input type="text" id="searchInput" placeholder="Search collection..." class="control-element w-full px-4 py-2 rounded-lg text-white placeholder-gray-500">
             </div>
-            <!-- Genre Filter Buttons -->
-            <div id="genre-filter-buttons" class="flex flex-wrap justify-center gap-2 border-t border-gray-700 pt-4 mt-4 w-full max-w-4xl mx-auto">
-                <!-- Genre filter buttons will be generated here by JS -->
-            </div>
-            <div class="flex flex-wrap justify-center items-center gap-4 mt-4">
-                <!-- Sort Dropdown -->
-                <div class="relative">
-                    <select id="sort-select" class="appearance-none bg-gray-800 border-2 border-gray-700 rounded-lg py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="default">Sort by...</option>
-                        <option value="title-asc">Title (A-Z)</option>
-                        <option value="title-desc">Title (Z-A)</option>
-                        <option value="year-desc">Year (Newest)</option>
-                        <option value="year-asc">Year (Oldest)</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                    </div>
-                </div>
-                 <!-- Reset Button -->
-                <button id="reset-button" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                    <i class="fa-solid fa-rotate-right mr-2"></i>Reset
+            <!-- Filter Dropdowns -->
+            <select id="type-filter" class="control-element w-full px-4 py-2 rounded-lg text-white"></select>
+            <select id="genre-filter" class="control-element w-full px-4 py-2 rounded-lg text-white"></select>
+            <!-- Sort and Reset -->
+            <div class="flex gap-4 w-full">
+                <select id="sort-select" class="control-element w-full px-4 py-2 rounded-lg text-white">
+                    <option value="default">Sort By</option>
+                    <option value="title-asc">Title (A-Z)</option>
+                    <option value="title-desc">Title (Z-A)</option>
+                    <option value="year-desc">Year (Newest)</option>
+                    <option value="year-asc">Year (Oldest)</option>
+                </select>
+                <button id="reset-button" title="Reset Filters" class="bg-gray-600 hover:bg-gray-700 text-white font-bold p-2.5 rounded-lg transition-colors">
+                    <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
         </div>
@@ -134,20 +140,14 @@
 
     <!-- Details Modal -->
     <div id="details-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden opacity-0">
-        <div id="modal-content" class="modal-content bg-gray-800 rounded-lg shadow-2xl w-full max-w-4xl max-h-full overflow-y-auto relative scale-95">
-            <!-- Modal content will be populated by JS -->
-        </div>
+        <div id="modal-content" class="modal-content bg-gray-800 rounded-lg shadow-2xl w-full max-w-4xl max-h-full overflow-y-auto relative scale-95"></div>
     </div>
 
     <!-- Trailer Modal -->
     <div id="trailer-modal" class="modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-[60] hidden opacity-0">
         <div class="w-full max-w-4xl relative">
-             <button id="close-trailer-btn" class="absolute -top-10 right-0 text-white hover:text-red-500 text-3xl z-10">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div id="trailer-video-container" class="video-container rounded-lg overflow-hidden shadow-2xl">
-                <!-- YouTube Iframe will be injected here -->
-            </div>
+             <button id="close-trailer-btn" class="absolute -top-10 right-0 text-white hover:text-red-500 text-3xl z-10"><i class="fa-solid fa-xmark"></i></button>
+            <div id="trailer-video-container" class="video-container rounded-lg overflow-hidden shadow-2xl"></div>
         </div>
     </div>
 
@@ -155,13 +155,14 @@
     <script>
         // --- CONFIGURATION ---
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpSN6K4wy6t82cGVA7RYv3z0ZdSdnfiubeeSMRYMT5wOEKpCiComv_vPOX0mov5c6-DCj4Yg9UsiE-/pub?output=csv';
+        const SLIDER_ITEM_COUNT = 20;
 
         // --- DOM ELEMENTS ---
         const mediaContainer = document.getElementById('media-container');
         const searchInput = document.getElementById('searchInput');
         const noResultsMessage = document.getElementById('no-results');
-        const typeFilterButtonsContainer = document.getElementById('type-filter-buttons');
-        const genreFilterButtonsContainer = document.getElementById('genre-filter-buttons');
+        const typeFilterDropdown = document.getElementById('type-filter');
+        const genreFilterDropdown = document.getElementById('genre-filter');
         const sortSelect = document.getElementById('sort-select');
         const resetButton = document.getElementById('reset-button');
         const lastUpdatedSpan = document.getElementById('last-updated');
@@ -169,30 +170,23 @@
         const modalContent = document.getElementById('modal-content');
         const trailerModal = document.getElementById('trailer-modal');
         const trailerVideoContainer = document.getElementById('trailer-video-container');
+        const featuredSlider = document.getElementById('featured-slider');
+        const sliderTrack = document.getElementById('slider-track');
         
         // --- GLOBAL STATE ---
-        let allMediaData = []; // To store the original fetched data
-        let currentTypeFilter = 'All'; // To track the active type filter
-        let currentGenreFilter = 'All'; // To track the active genre filter
-        let currentSort = 'default'; // To track the active sort option
+        let allMediaData = [];
 
         // --- FUNCTIONS ---
 
-        /**
-         * A more robust CSV parser that handles quoted fields.
-         */
         function parseCSV(csvText) {
             const lines = csvText.trim().split(/\r?\n/);
             if (lines.length < 2) return [];
-
             const headers = lines[0].split(',').map(h => h.trim());
             const data = [];
-
             for (let i = 1; i < lines.length; i++) {
                 const row = [];
                 let currentField = '';
                 let inQuotedField = false;
-
                 for (let j = 0; j < lines[i].length; j++) {
                     const char = lines[i][j];
                     if (char === '"' && (j === 0 || lines[i][j - 1] !== '\\')) {
@@ -205,14 +199,11 @@
                     }
                 }
                 row.push(currentField.trim());
-
                 if (row.length === headers.length) {
                     const entry = {};
                     headers.forEach((header, index) => {
                         let value = row[index];
-                        if (value.startsWith('"') && value.endsWith('"')) {
-                            value = value.substring(1, value.length - 1);
-                        }
+                        if (value.startsWith('"') && value.endsWith('"')) value = value.substring(1, value.length - 1);
                         entry[header] = value.replace(/""/g, '"');
                     });
                     data.push(entry);
@@ -221,40 +212,31 @@
             return data;
         }
 
-        /**
-         * Renders the media items to the page.
-         */
         function renderMedia(mediaItems) {
             mediaContainer.innerHTML = ''; 
             noResultsMessage.classList.toggle('hidden', mediaItems.length === 0);
-
             mediaItems.forEach(item => {
                 const posterUrl = item['Poster Link'] || '';
                 const cardElement = document.createElement('div');
                 cardElement.addEventListener('click', () => showDetailsModal(item));
-
                 if (posterUrl) {
-                    // --- POSTER-BASED CARD ---
                     cardElement.className = 'group relative aspect-[2/3] bg-gray-900 rounded-lg overflow-hidden shadow-lg transition-all duration-300 ease-in-out cursor-pointer hover:scale-105 hover:shadow-2xl';
                     const placeholderUrl = `https://placehold.co/400x600/1f2937/d1d5db?text=${encodeURIComponent(item.Title || '').replace(/'/g, '%27')}`;
-                    
                     cardElement.innerHTML = `
                         <img src="${posterUrl}" onerror="this.onerror=null;this.src='${placeholderUrl}';" alt="Poster for ${item.Title}" class="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50">
                         <div class="absolute inset-0 p-4 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <h2 class="text-xl font-bold text-white mb-1">${item.Title || 'Untitled'}</h2>
                             <p class="text-sm text-gray-300">${item.Year || ''}</p>
-                        </div>
-                    `;
+                        </div>`;
                 } else {
-                    // --- FALLBACK TEXT-BASED CARD ---
-                    cardElement.className = 'bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col cursor-pointer';
+                    cardElement.className = 'bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out flex flex-col cursor-pointer aspect-[2/3]';
                     const typeColor = {'Movie': 'bg-indigo-900/50', 'Book': 'bg-emerald-900/50', 'TV Show': 'bg-sky-900/50', 'Video Game': 'bg-rose-900/50', 'default': 'bg-gray-800'}[item.Type] || 'bg-gray-800';
                     let creatorLabel = 'Creator';
                     let creatorName = item.Creator || 'Unknown';
-                    if (item.Type && item.Type.toLowerCase() === 'movie') {
+                    if (item.Type?.toLowerCase() === 'movie') {
                         creatorLabel = 'Director(s)';
                         creatorName = item['Director(s)'] || item['Director'] || item.Creator || 'Unknown';
-                    } else if (item.Type && item.Type.toLowerCase() === 'book') {
+                    } else if (item.Type?.toLowerCase() === 'book') {
                         creatorLabel = 'Author';
                     }
                     cardElement.innerHTML = `
@@ -266,36 +248,28 @@
                                 ${item.Year ? `<span class="text-xs font-semibold text-gray-300 bg-gray-700 px-2 py-1 rounded-full">${item.Year}</span>` : ''}
                             </div>
                         </div>
-                        <div class="px-5 py-3 ${typeColor}"><p class="text-sm font-semibold text-white">${item.Type || 'Media'}</p></div>
-                    `;
+                        <div class="px-5 py-3 ${typeColor}"><p class="text-sm font-semibold text-white">${item.Type || 'Media'}</p></div>`;
                 }
                 mediaContainer.appendChild(cardElement);
             });
         }
         
-        /**
-         * Shows the details modal with information for the selected item.
-         */
         function showDetailsModal(item) {
             const posterUrl = item['Poster Link'] || '';
             const encodedTitle = encodeURIComponent(item.Title || '').replace(/'/g, '%27');
             const placeholderUrl = `https://placehold.co/400x600/1f2937/d1d5db?text=${encodedTitle}`;
-            
             let creatorLabel = 'Creator';
             let creatorName = item.Creator || 'Unknown';
-            if (item.Type && item.Type.toLowerCase() === 'movie') {
+            if (item.Type?.toLowerCase() === 'movie') {
                 creatorLabel = 'Director(s)';
                 creatorName = item['Director(s)'] || item['Director'] || item.Creator || 'Unknown';
-            } else if (item.Type && item.Type.toLowerCase() === 'book') {
+            } else if (item.Type?.toLowerCase() === 'book') {
                 creatorLabel = 'Author';
             }
-
             modalContent.innerHTML = `
                 <button id="close-details-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl z-10"><i class="fa-solid fa-xmark"></i></button>
                 <div class="flex flex-col md:flex-row">
-                    <div class="md:w-1/3 p-4">
-                        <img src="${posterUrl}" onerror="this.onerror=null;this.src='${placeholderUrl}';" alt="Poster for ${item.Title}" class="w-full h-auto rounded-lg shadow-lg">
-                    </div>
+                    <div class="md:w-1/3 p-4"><img src="${posterUrl}" onerror="this.onerror=null;this.src='${placeholderUrl}';" alt="Poster for ${item.Title}" class="w-full h-auto rounded-lg shadow-lg"></div>
                     <div class="md:w-2/3 p-6 flex flex-col">
                         <h2 class="text-3xl font-bold text-white mb-2">${item.Title} (${item.Year || 'N/A'})</h2>
                         <div class="flex flex-wrap gap-x-4 gap-y-2 text-gray-400 mb-4">
@@ -309,27 +283,19 @@
                             ${item['Writer(s)'] ? `<p><span class="font-semibold">Writer(s):</span> ${item['Writer(s)']}</p>` : ''}
                             ${item['Actor(s)'] ? `<p><span class="font-semibold">Actor(s):</span> ${item['Actor(s)']}</p>` : ''}
                         </div>
-                        <div class="text-gray-300 flex-grow mb-4">
-                            <h3 class="font-semibold text-white text-xl mb-2">Summary</h3>
-                            <p>${item['Summary'] || 'No summary available.'}</p>
-                        </div>
+                        <div class="text-gray-300 flex-grow mb-4"><h3 class="font-semibold text-white text-xl mb-2">Summary</h3><p>${item['Summary'] || 'No summary available.'}</p></div>
                         ${item['Trailer Link'] ? `<button id="view-trailer-btn" class="mt-auto inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors text-center w-full"><i class="fa-brands fa-youtube mr-2"></i>View Trailer</button>` : ''}
                     </div>
-                </div>
-            `;
-            
+                </div>`;
             document.body.style.overflow = 'hidden';
             detailsModal.classList.remove('hidden');
             setTimeout(() => {
                 detailsModal.classList.remove('opacity-0');
                 modalContent.classList.remove('scale-95');
             }, 10);
-
             document.getElementById('close-details-btn').addEventListener('click', hideDetailsModal);
             const trailerButton = document.getElementById('view-trailer-btn');
-            if (trailerButton) {
-                trailerButton.addEventListener('click', () => showTrailerModal(item['Trailer Link']));
-            }
+            if (trailerButton) trailerButton.addEventListener('click', () => showTrailerModal(item['Trailer Link']));
         }
 
         function hideDetailsModal() {
@@ -341,17 +307,13 @@
 
         function getYoutubeVideoId(url) {
             if (!url) return null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
+            const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
         function showTrailerModal(trailerUrl) {
             const videoId = getYoutubeVideoId(trailerUrl);
-            if (!videoId) {
-                alert('Invalid YouTube URL provided.');
-                return;
-            }
+            if (!videoId) { alert('Invalid YouTube URL provided.'); return; }
             trailerVideoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             trailerModal.classList.remove('hidden');
             setTimeout(() => trailerModal.classList.remove('opacity-0'), 10);
@@ -365,130 +327,94 @@
             }, 250);
         }
 
-        function generateTypeFilterButtons() {
-            const types = ['All', ...new Set(allMediaData.map(item => item.Type).filter(Boolean).sort())];
-            typeFilterButtonsContainer.innerHTML = types.map(type => `
-                <button class="filter-btn px-4 py-2 bg-gray-700 text-gray-300 rounded-lg ${type === 'All' ? 'active' : ''}" data-type-filter="${type}">
-                    ${type}
-                </button>
-            `).join('');
-
-            typeFilterButtonsContainer.querySelectorAll('.filter-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    currentTypeFilter = button.dataset.typeFilter;
-                    applyFiltersAndSort();
-                });
-            });
+        function populateFilterDropdown(element, getValues, label) {
+            const values = ['All', ...new Set(getValues())].sort();
+            element.innerHTML = `<option value="All">${label}</option>` + values.slice(1).map(value => `<option value="${value}">${value}</option>`).join('');
         }
 
-        function generateGenreFilterButtons() {
-            const allGenres = new Set();
-            allMediaData.forEach(item => {
-                if (item.Genre) {
-                    item.Genre.split(',').forEach(genre => {
-                        if (genre.trim()) allGenres.add(genre.trim());
-                    });
-                }
+        function populateFeaturedSlider() {
+            const featuredItems = allMediaData
+                .filter(item => (item.Type === 'Movie' || item.Type === 'TV Show') && item['Poster Link'])
+                .sort(() => 0.5 - Math.random()) // Shuffle the array
+                .slice(0, SLIDER_ITEM_COUNT);
+
+            if (featuredItems.length < 5) { // Only show slider if there are enough items
+                featuredSlider.classList.add('hidden');
+                return;
+            }
+
+            featuredSlider.classList.remove('hidden');
+            let sliderHTML = '';
+            featuredItems.forEach(item => {
+                const placeholderUrl = `https://placehold.co/400x600/1f2937/d1d5db?text=${encodeURIComponent(item.Title || '').replace(/'/g, '%27')}`;
+                sliderHTML += `
+                    <div class="flex-shrink-0 w-44 h-full mx-2 cursor-pointer group" onclick="showDetailsModal(allMediaData.find(i => i.Title === '${item.Title.replace(/'/g, "\\'")}'))">
+                        <img src="${item['Poster Link']}" onerror="this.onerror=null;this.src='${placeholderUrl}';" alt="${item.Title}" class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105">
+                    </div>
+                `;
             });
 
-            const sortedGenres = ['All', ...Array.from(allGenres).sort()];
-            genreFilterButtonsContainer.innerHTML = sortedGenres.map(genre => `
-                <button class="filter-btn px-3 py-1 bg-gray-600 text-gray-300 rounded-full text-sm ${genre === 'All' ? 'active' : ''}" data-genre-filter="${genre}">
-                    ${genre}
-                </button>
-            `).join('');
-
-            genreFilterButtonsContainer.querySelectorAll('.filter-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    currentGenreFilter = button.dataset.genreFilter;
-                    applyFiltersAndSort();
-                });
-            });
+            // Duplicate the content for a seamless loop
+            sliderTrack.innerHTML = sliderHTML + sliderHTML;
+            // Adjust animation duration based on content
+            sliderTrack.style.animationDuration = `${featuredItems.length * 5}s`;
         }
 
         function applyFiltersAndSort() {
-            let processedData = [...allMediaData];
             const searchTerm = searchInput.value.toLowerCase();
-            if (searchTerm) {
-                processedData = processedData.filter(item => Object.values(item).some(value => String(value).toLowerCase().includes(searchTerm)));
-            }
-
-            if (currentTypeFilter !== 'All') {
-                processedData = processedData.filter(item => item.Type === currentTypeFilter);
-            }
-
-            if (currentGenreFilter !== 'All') {
-                processedData = processedData.filter(item => item.Genre && item.Genre.split(',').map(g => g.trim()).includes(currentGenreFilter));
-            }
+            const typeFilter = typeFilterDropdown.value;
+            const genreFilter = genreFilterDropdown.value;
+            const sortValue = sortSelect.value;
             
-            typeFilterButtonsContainer.querySelectorAll('.filter-btn').forEach(button => button.classList.toggle('active', button.dataset.typeFilter === currentTypeFilter));
-            genreFilterButtonsContainer.querySelectorAll('.filter-btn').forEach(button => button.classList.toggle('active', button.dataset.genreFilter === currentGenreFilter));
+            let processedData = allMediaData
+                .filter(item => searchTerm ? Object.values(item).some(val => String(val).toLowerCase().includes(searchTerm)) : true)
+                .filter(item => typeFilter !== 'All' ? item.Type === typeFilter : true)
+                .filter(item => genreFilter !== 'All' ? item.Genre?.split(',').map(g => g.trim()).includes(genreFilter) : true);
 
-            switch (currentSort) {
-                case 'title-asc':
-                    processedData.sort((a, b) => (a.Title || '').localeCompare(b.Title || ''));
-                    break;
-                case 'title-desc':
-                    processedData.sort((a, b) => (b.Title || '').localeCompare(a.Title || ''));
-                    break;
-                case 'year-desc':
-                    processedData.sort((a, b) => (b.Year || 0) - (a.Year || 0));
-                    break;
-                case 'year-asc':
-                    processedData.sort((a, b) => (a.Year || 0) - (b.Year || 0));
-                    break;
+            switch (sortValue) {
+                case 'title-asc': processedData.sort((a, b) => (a.Title || '').localeCompare(b.Title || '')); break;
+                case 'title-desc': processedData.sort((a, b) => (b.Title || '').localeCompare(a.Title || '')); break;
+                case 'year-desc': processedData.sort((a, b) => (b.Year || 0) - (a.Year || 0)); break;
+                case 'year-asc': processedData.sort((a, b) => (a.Year || 0) - (b.Year || 0)); break;
             }
-            
             renderMedia(processedData);
         }
 
         function resetAll() {
             searchInput.value = '';
+            typeFilterDropdown.value = 'All';
+            genreFilterDropdown.value = 'All';
             sortSelect.value = 'default';
-            currentTypeFilter = 'All';
-            currentGenreFilter = 'All';
-            currentSort = 'default';
             applyFiltersAndSort();
         }
 
         async function initialize() {
             mediaContainer.innerHTML = '<p class="text-gray-400 col-span-full text-center">Fetching media data...</p>';
             try {
-                const cacheBustingUrl = `${CSV_URL}&_=${new Date().getTime()}`;
-                const response = await fetch(cacheBustingUrl);
+                const response = await fetch(`${CSV_URL}&_=${new Date().getTime()}`);
                 if (!response.ok) throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
-                
                 const csvText = await response.text();
                 allMediaData = parseCSV(csvText);
                 
+                populateFilterDropdown(typeFilterDropdown, () => allMediaData.map(item => item.Type).filter(Boolean), 'All Types');
+                populateFilterDropdown(genreFilterDropdown, () => allMediaData.flatMap(item => item.Genre?.split(',') || []).map(g => g.trim()).filter(Boolean), 'All Genres');
+                populateFeaturedSlider();
+                
                 lastUpdatedSpan.textContent = new Date().toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' });
-
-                generateTypeFilterButtons();
-                generateGenreFilterButtons();
                 applyFiltersAndSort();
-
             } catch (error) {
                 console.error('Failed to fetch or parse media data:', error);
-                mediaContainer.innerHTML = `<p class="text-red-400 col-span-full text-center">Error: Could not load media data. The source may be unavailable or blocked. Please check the console for details.</p>`;
+                mediaContainer.innerHTML = `<p class="text-red-400 col-span-full text-center">Error: Could not load media data. Please check the console for details.</p>`;
                 lastUpdatedSpan.textContent = 'Failed to load';
             }
         }
 
         // --- EVENT LISTENERS ---
-        searchInput.addEventListener('keyup', applyFiltersAndSort);
-        sortSelect.addEventListener('change', (e) => {
-            currentSort = e.target.value;
-            applyFiltersAndSort();
-        });
+        [searchInput, typeFilterDropdown, genreFilterDropdown, sortSelect].forEach(el => el.addEventListener('input', applyFiltersAndSort));
         resetButton.addEventListener('click', resetAll);
-        detailsModal.addEventListener('click', (e) => {
-            if (e.target === detailsModal) hideDetailsModal();
-        });
+        detailsModal.addEventListener('click', e => { if (e.target === detailsModal) hideDetailsModal(); });
         document.getElementById('close-trailer-btn').addEventListener('click', hideTrailerModal);
-        trailerModal.addEventListener('click', (e) => {
-            if (e.target === trailerModal) hideTrailerModal();
-        });
-        
+        trailerModal.addEventListener('click', e => { if (e.target === trailerModal) hideTrailerModal(); });
         document.addEventListener('DOMContentLoaded', initialize);
 
     </script>
