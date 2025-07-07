@@ -15,6 +15,8 @@
     <!-- noUiSlider for the range slider -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Custom styles to complement Tailwind */
         body {
@@ -147,7 +149,7 @@
         <!-- Featured Slider Section -->
         <div id="featured-slider" class="w-full mb-12 hidden">
             <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 text-center">Featured Movies & Shows</h2>
-            <div class="slider-container w-full overflow-x-hidden relative h-64">
+            <div class="slider-container w-full overflow-hidden relative h-64 py-4">
                 <div id="slider-track" class="slider-track flex absolute top-0 left-0 h-full">
                     <!-- Slider items will be injected here -->
                 </div>
@@ -184,6 +186,9 @@
                     <option value="year-desc">Year (Newest)</option>
                     <option value="year-asc">Year (Oldest)</option>
                 </select>
+                <button id="dashboard-button" title="View Dashboard" class="bg-blue-600 hover:bg-blue-700 text-white font-bold p-2.5 rounded-lg transition-colors">
+                    <i class="fa-solid fa-chart-line"></i>
+                </button>
                 <button id="random-pick-button" title="Pick for me!" class="bg-green-600 hover:bg-green-700 text-white font-bold p-2.5 rounded-lg transition-colors">
                     <i class="fa-solid fa-dice"></i>
                 </button>
@@ -218,6 +223,28 @@
             <div id="trailer-video-container" class="video-container rounded-lg overflow-hidden shadow-2xl"></div>
         </div>
     </div>
+    
+    <!-- Dashboard Modal -->
+    <div id="dashboard-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 hidden opacity-0">
+        <div class="modal-content bg-slate-100 dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto relative scale-95 p-6">
+            <button id="close-dashboard-btn" class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white text-2xl z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-6 text-center">Library Dashboard</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-2 text-center">Media by Type</h3>
+                    <canvas id="type-chart"></canvas>
+                </div>
+                <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-2 text-center">Top 10 Genres</h3>
+                    <canvas id="genre-chart"></canvas>
+                </div>
+                <div class="lg:col-span-2 bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-2 text-center">Collection by Decade</h3>
+                    <canvas id="decade-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <script>
@@ -234,11 +261,13 @@
         const sortSelect = document.getElementById('sort-select');
         const resetButton = document.getElementById('reset-button');
         const randomPickButton = document.getElementById('random-pick-button');
+        const dashboardButton = document.getElementById('dashboard-button');
         const lastUpdatedSpan = document.getElementById('last-updated');
         const detailsModal = document.getElementById('details-modal');
         const modalContent = document.getElementById('modal-content');
         const trailerModal = document.getElementById('trailer-modal');
         const trailerVideoContainer = document.getElementById('trailer-video-container');
+        const dashboardModal = document.getElementById('dashboard-modal');
         const featuredSlider = document.getElementById('featured-slider');
         const sliderTrack = document.getElementById('slider-track');
         const themeToggleButton = document.getElementById('theme-toggle');
@@ -253,6 +282,7 @@
         let allMediaData = [];
         let yearRange = { min: 1900, max: new Date().getFullYear() };
         let isPickingRandom = false;
+        let activeCharts = {};
 
         // --- FUNCTIONS ---
 
@@ -549,7 +579,7 @@
         }
 
         function toggleControls(enabled) {
-            const controls = [searchInput, typeFilterDropdown, genreFilterDropdown, sortSelect, resetButton, randomPickButton];
+            const controls = [searchInput, typeFilterDropdown, genreFilterDropdown, sortSelect, resetButton, randomPickButton, dashboardButton];
             controls.forEach(control => {
                 control.disabled = !enabled;
                 control.style.cursor = enabled ? '' : 'not-allowed';
@@ -589,6 +619,102 @@
             }
         }
 
+        function showDashboard() {
+            document.body.style.overflow = 'hidden';
+            dashboardModal.classList.remove('hidden');
+            setTimeout(() => {
+                dashboardModal.classList.remove('opacity-0');
+                dashboardModal.querySelector('.modal-content').classList.remove('scale-95');
+                renderCharts();
+            }, 10);
+        }
+
+        function hideDashboard() {
+            document.body.style.overflow = '';
+            dashboardModal.classList.add('opacity-0');
+            dashboardModal.querySelector('.modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                dashboardModal.classList.add('hidden');
+                Object.values(activeCharts).forEach(chart => chart.destroy());
+                activeCharts = {};
+            }, 250);
+        }
+
+        function renderCharts() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? 'rgba(229, 231, 235, 0.9)' : 'rgba(31, 41, 55, 0.9)';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+            Chart.defaults.color = textColor;
+
+            // Type Chart
+            const typeCtx = document.getElementById('type-chart').getContext('2d');
+            const typeCounts = allMediaData.reduce((acc, item) => {
+                if(item.Type) acc[item.Type] = (acc[item.Type] || 0) + 1;
+                return acc;
+            }, {});
+            if (activeCharts.type) activeCharts.type.destroy();
+            activeCharts.type = new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: ['#4f46e5', '#10b981', '#0ea5e9', '#f43f5e', '#6b7280', '#f97316', '#8b5cf6'],
+                        borderColor: isDark ? '#1f2937' : '#f9fafb',
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Genre Chart
+            const genreCtx = document.getElementById('genre-chart').getContext('2d');
+            const genreCounts = allMediaData.flatMap(item => item.Genre?.split(',') || []).map(g => g.trim()).filter(Boolean).reduce((acc, genre) => {
+                acc[genre] = (acc[genre] || 0) + 1;
+                return acc;
+            }, {});
+            const sortedGenres = Object.entries(genreCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            if (activeCharts.genre) activeCharts.genre.destroy();
+            activeCharts.genre = new Chart(genreCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedGenres.map(g => g[0]),
+                    datasets: [{
+                        label: 'Count',
+                        data: sortedGenres.map(g => g[1]),
+                        backgroundColor: '#3b82f6',
+                    }]
+                },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { grid: { color: gridColor } }, y: { grid: { color: gridColor } } } }
+            });
+
+            // Decade Chart
+            const decadeCtx = document.getElementById('decade-chart').getContext('2d');
+            const decadeCounts = allMediaData.reduce((acc, item) => {
+                if (item.Year && !isNaN(item.Year)) {
+                    const decade = Math.floor(item.Year / 10) * 10;
+                    acc[decade] = (acc[decade] || 0) + 1;
+                }
+                return acc;
+            }, {});
+            const sortedDecades = Object.entries(decadeCounts).sort((a, b) => a[0] - b[0]);
+            if (activeCharts.decade) activeCharts.decade.destroy();
+            activeCharts.decade = new Chart(decadeCtx, {
+                type: 'line',
+                data: {
+                    labels: sortedDecades.map(d => `${d[0]}s`),
+                    datasets: [{
+                        label: 'Media Count',
+                        data: sortedDecades.map(d => d[1]),
+                        fill: true,
+                        borderColor: '#16a34a',
+                        backgroundColor: isDark ? 'rgba(22, 163, 74, 0.2)' : 'rgba(22, 163, 74, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { grid: { color: gridColor } }, y: { grid: { color: gridColor } } } }
+            });
+        }
+
         async function initialize() {
             mediaContainer.innerHTML = '<p class="text-gray-400 col-span-full text-center">Fetching media data...</p>';
             try {
@@ -616,6 +742,8 @@
         [searchInput, typeFilterDropdown, genreFilterDropdown, sortSelect].forEach(el => el.addEventListener('input', applyFiltersAndSort));
         resetButton.addEventListener('click', resetAll);
         randomPickButton.addEventListener('click', pickRandomMedia);
+        dashboardButton.addEventListener('click', showDashboard);
+        document.getElementById('close-dashboard-btn').addEventListener('click', hideDashboard);
         detailsModal.addEventListener('click', e => { if (e.target === detailsModal) hideDetailsModal(); });
         document.getElementById('close-trailer-btn').addEventListener('click', hideTrailerModal);
         trailerModal.addEventListener('click', e => { if (e.target === trailerModal) hideTrailerModal(); });
