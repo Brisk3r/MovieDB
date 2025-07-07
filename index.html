@@ -12,6 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- noUiSlider for the range slider -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <style>
         /* Custom styles to complement Tailwind */
         body {
@@ -82,6 +85,47 @@
         .slider-container:hover .slider-track {
             animation-play-state: paused;
         }
+        /* --- noUiSlider Custom Styles --- */
+        .noUi-target {
+            background: #e2e8f0;
+            border-radius: 9999px;
+            border: none;
+            box-shadow: none;
+            height: 0.75rem;
+        }
+        .dark .noUi-target {
+            background: #374151;
+        }
+        .noUi-connect {
+            background: #3b82f6;
+        }
+        .noUi-handle {
+            width: 1rem !important;
+            height: 1rem !important;
+            right: -0.5rem !important;
+            top: -0.125rem !important;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            cursor: grab;
+        }
+        .dark .noUi-handle {
+            border-color: #1f2937;
+        }
+        .noUi-handle:focus {
+            outline: none;
+        }
+        .noUi-handle:active {
+            cursor: grabbing;
+        }
+        .noUi-handle::before, .noUi-handle::after {
+            display: none;
+        }
+        /* --- Randomizer Highlight --- */
+        .slider-highlight {
+            box-shadow: 0 0 0 4px #3b82f6 !important;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-gray-900 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
@@ -90,7 +134,7 @@
 
         <!-- Header Section -->
         <header class="text-center mb-8 relative">
-            <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-2">Family Media Library</h1>
+            <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-2">The Grand Kumacho Library</h1>
             <p class="text-lg text-slate-600 dark:text-gray-400">A searchable, filterable collection of our favourite media.</p>
             <p class="text-sm text-slate-500 dark:text-gray-500 mt-2">Last Updated: <span id="last-updated" class="font-semibold">Never</span></p>
             <!-- Theme Toggle Button -->
@@ -102,24 +146,36 @@
 
         <!-- Featured Slider Section -->
         <div id="featured-slider" class="w-full mb-12 hidden">
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">Featured Movies & Shows</h2>
-            <div class="slider-container w-full overflow-hidden relative h-64">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4 text-center">Featured Movies & Shows</h2>
+            <div class="slider-container w-full overflow-x-hidden relative h-64">
                 <div id="slider-track" class="slider-track flex absolute top-0 left-0 h-full">
                     <!-- Slider items will be injected here -->
                 </div>
+                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-full bg-blue-500/50 rounded-full z-10 opacity-0" id="selection-indicator"></div>
             </div>
         </div>
 
         <!-- Controls Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 items-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 items-center">
             <!-- Search Input -->
-            <div class="lg:col-span-2">
+            <div class="w-full">
                 <input type="text" id="searchInput" placeholder="Search collection..." class="control-element w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-gray-500">
             </div>
             <!-- Filter Dropdowns -->
             <select id="type-filter" class="control-element w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-slate-900 dark:text-white"></select>
             <select id="genre-filter" class="control-element w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-slate-900 dark:text-white"></select>
-            <!-- Sort and Reset -->
+        </div>
+        <!-- Second row of controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 items-center">
+             <!-- Year Range Slider -->
+            <div class="w-full px-2">
+                <div id="year-slider"></div>
+                <div class="flex justify-between text-sm text-slate-600 dark:text-gray-400 mt-2">
+                    <span id="year-range-label-start"></span>
+                    <span id="year-range-label-end"></span>
+                </div>
+            </div>
+            <!-- Sort, Random, and Reset -->
             <div class="flex gap-4 w-full">
                 <select id="sort-select" class="control-element w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-slate-900 dark:text-white">
                     <option value="default">Sort By</option>
@@ -128,11 +184,15 @@
                     <option value="year-desc">Year (Newest)</option>
                     <option value="year-asc">Year (Oldest)</option>
                 </select>
+                <button id="random-pick-button" title="Pick for me!" class="bg-green-600 hover:bg-green-700 text-white font-bold p-2.5 rounded-lg transition-colors">
+                    <i class="fa-solid fa-dice"></i>
+                </button>
                 <button id="reset-button" title="Reset Filters" class="bg-gray-600 hover:bg-gray-700 text-white font-bold p-2.5 rounded-lg transition-colors">
                     <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
         </div>
+
 
         <!-- Media Container -->
         <div id="media-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -173,6 +233,7 @@
         const genreFilterDropdown = document.getElementById('genre-filter');
         const sortSelect = document.getElementById('sort-select');
         const resetButton = document.getElementById('reset-button');
+        const randomPickButton = document.getElementById('random-pick-button');
         const lastUpdatedSpan = document.getElementById('last-updated');
         const detailsModal = document.getElementById('details-modal');
         const modalContent = document.getElementById('modal-content');
@@ -183,9 +244,15 @@
         const themeToggleButton = document.getElementById('theme-toggle');
         const sunIcon = document.getElementById('theme-toggle-sun');
         const moonIcon = document.getElementById('theme-toggle-moon');
+        const yearSlider = document.getElementById('year-slider');
+        const yearRangeStartLabel = document.getElementById('year-range-label-start');
+        const yearRangeEndLabel = document.getElementById('year-range-label-end');
+        const selectionIndicator = document.getElementById('selection-indicator');
         
         // --- GLOBAL STATE ---
         let allMediaData = [];
+        let yearRange = { min: 1900, max: new Date().getFullYear() };
+        let isPickingRandom = false;
 
         // --- FUNCTIONS ---
 
@@ -226,10 +293,14 @@
         function renderMedia(mediaItems) {
             mediaContainer.innerHTML = ''; 
             noResultsMessage.classList.toggle('hidden', mediaItems.length === 0);
-            mediaItems.forEach(item => {
+            mediaItems.forEach((item, index) => {
                 const posterUrl = item['Poster Link'] || '';
                 const cardElement = document.createElement('div');
-                cardElement.addEventListener('click', () => showDetailsModal(item));
+                cardElement.dataset.index = index; // Add index for randomizer
+                cardElement.addEventListener('click', () => {
+                    if (!isPickingRandom) showDetailsModal(item);
+                });
+                
                 if (posterUrl) {
                     cardElement.className = 'group relative aspect-[2/3] bg-gray-700 dark:bg-gray-900 rounded-lg overflow-hidden shadow-lg transition-all duration-300 ease-in-out cursor-pointer hover:scale-105 hover:shadow-2xl';
                     const placeholderUrl = `https://placehold.co/400x600/1f2937/d1d5db?text=${encodeURIComponent(item.Title || '').replace(/'/g, '%27')}`;
@@ -343,47 +414,94 @@
             element.innerHTML = `<option value="All">${label}</option>` + values.slice(1).map(value => `<option value="${value}">${value}</option>`).join('');
         }
 
-        function populateFeaturedSlider() {
-            const featuredItems = allMediaData
-                .filter(item => (item.Type?.toLowerCase() === 'movie' || item.Type?.toLowerCase() === 'tv show') && item['Poster Link'])
-                .sort(() => 0.5 - Math.random())
-                .slice(0, SLIDER_ITEM_COUNT);
+        function populateFeaturedSlider(items) {
+             if (!items) { // If no items passed, generate a new random set
+                items = allMediaData
+                    .filter(item => (item.Type?.toLowerCase() === 'movie' || item.Type?.toLowerCase() === 'tv show') && item['Poster Link'])
+                    .sort(() => 0.5 - Math.random())
+                    .slice(0, SLIDER_ITEM_COUNT);
+            }
 
-            if (featuredItems.length < 5) {
+            if (items.length < 5) {
                 featuredSlider.classList.add('hidden');
-                return;
+                return [];
             }
 
             featuredSlider.classList.remove('hidden');
             sliderTrack.innerHTML = ''; // Clear previous items
+            sliderTrack.style.animation = 'none'; // Reset animation
 
             const createSliderItem = (item) => {
                 const placeholderUrl = `https://placehold.co/400x600/1f2937/d1d5db?text=${encodeURIComponent(item.Title || '').replace(/'/g, '%27')}`;
                 const div = document.createElement('div');
                 div.className = "flex-shrink-0 w-44 h-full mx-2 cursor-pointer group";
                 div.innerHTML = `<img src="${item['Poster Link']}" onerror="this.onerror=null;this.src='${placeholderUrl}';" alt="${item.Title}" class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105">`;
-                div.addEventListener('click', () => showDetailsModal(item));
+                div.addEventListener('click', () => {
+                    if (!isPickingRandom) showDetailsModal(item);
+                });
                 return div;
             };
 
-            featuredItems.forEach(item => sliderTrack.appendChild(createSliderItem(item)));
-            // Duplicate for seamless loop
-            featuredItems.forEach(item => sliderTrack.appendChild(createSliderItem(item)));
+            items.forEach(item => sliderTrack.appendChild(createSliderItem(item)));
+            items.forEach(item => sliderTrack.appendChild(createSliderItem(item))); // Duplicate for seamless loop
             
-            sliderTrack.style.animationDuration = `${featuredItems.length * 5}s`;
+            // Restart CSS animation
+            void sliderTrack.offsetWidth; // Trigger reflow
+            sliderTrack.style.animation = `scroll ${items.length * 5}s linear infinite`;
+            return items;
+        }
+
+        function initializeYearSlider() {
+            const years = allMediaData.map(item => parseInt(item.Year)).filter(Boolean);
+            const minYear = Math.min(...years);
+            const maxYear = Math.max(...years);
+            
+            if (minYear === Infinity || maxYear === -Infinity) return; // No valid years
+
+            yearRange = { min: minYear, max: maxYear };
+
+            noUiSlider.create(yearSlider, {
+                start: [minYear, maxYear],
+                connect: true,
+                step: 1,
+                range: {
+                    'min': minYear,
+                    'max': maxYear
+                },
+                format: {
+                    to: value => Math.round(value),
+                    from: value => Number(value)
+                }
+            });
+
+            yearSlider.noUiSlider.on('update', (values) => {
+                yearRangeStartLabel.textContent = values[0];
+                yearRangeEndLabel.textContent = values[1];
+            });
+
+            yearSlider.noUiSlider.on('change', () => {
+                const values = yearSlider.noUiSlider.get();
+                yearRange = { min: values[0], max: values[1] };
+                applyFiltersAndSort();
+            });
         }
 
         function applyFiltersAndSort() {
             const searchTerm = searchInput.value.toLowerCase();
             const typeFilter = typeFilterDropdown.value;
             const genreFilter = genreFilterDropdown.value;
-            const sortValue = sortSelect.value;
             
             let processedData = allMediaData
                 .filter(item => searchTerm ? Object.values(item).some(val => String(val).toLowerCase().includes(searchTerm)) : true)
                 .filter(item => typeFilter !== 'All' ? item.Type === typeFilter : true)
-                .filter(item => genreFilter !== 'All' ? item.Genre?.split(',').map(g => g.trim()).includes(genreFilter) : true);
+                .filter(item => genreFilter !== 'All' ? item.Genre?.split(',').map(g => g.trim()).includes(genreFilter) : true)
+                .filter(item => {
+                    const itemYear = parseInt(item.Year);
+                    if (!itemYear) return true; // Include items without a year
+                    return itemYear >= yearRange.min && itemYear <= yearRange.max;
+                });
 
+            const sortValue = sortSelect.value;
             switch (sortValue) {
                 case 'title-asc': processedData.sort((a, b) => (a.Title || '').localeCompare(b.Title || '')); break;
                 case 'title-desc': processedData.sort((a, b) => (b.Title || '').localeCompare(a.Title || '')); break;
@@ -393,11 +511,60 @@
             renderMedia(processedData);
         }
 
+        function pickRandomMedia() {
+            if (isPickingRandom) return;
+            isPickingRandom = true;
+            toggleControls(false);
+            
+            const featuredItems = populateFeaturedSlider();
+            if (featuredItems.length === 0) {
+                alert("No featured items to pick from!");
+                isPickingRandom = false;
+                toggleControls(true);
+                return;
+            }
+
+            const finalItem = featuredItems[Math.floor(Math.random() * featuredItems.length)];
+            const finalElement = Array.from(sliderTrack.children).find(el => el.querySelector('img').alt === finalItem.Title);
+
+            sliderTrack.style.animation = 'none';
+            selectionIndicator.classList.remove('opacity-0');
+
+            const targetPosition = finalElement.offsetLeft - (sliderTrack.parentElement.offsetWidth / 2) + (finalElement.offsetWidth / 2);
+            
+            sliderTrack.style.transition = 'transform 3s cubic-bezier(0.25, 1, 0.5, 1)';
+            sliderTrack.style.transform = `translateX(-${targetPosition}px)`;
+
+            sliderTrack.addEventListener('transitionend', () => {
+                finalElement.classList.add('slider-highlight');
+                setTimeout(() => {
+                    showDetailsModal(finalItem);
+                    finalElement.classList.remove('slider-highlight');
+                    selectionIndicator.classList.add('opacity-0');
+                    sliderTrack.style.transition = ''; // Reset transition
+                    isPickingRandom = false;
+                    toggleControls(true);
+                }, 800);
+            }, { once: true });
+        }
+
+        function toggleControls(enabled) {
+            const controls = [searchInput, typeFilterDropdown, genreFilterDropdown, sortSelect, resetButton, randomPickButton];
+            controls.forEach(control => {
+                control.disabled = !enabled;
+                control.style.cursor = enabled ? '' : 'not-allowed';
+                control.style.opacity = enabled ? '1' : '0.5';
+            });
+        }
+
         function resetAll() {
             searchInput.value = '';
             typeFilterDropdown.value = 'All';
             genreFilterDropdown.value = 'All';
             sortSelect.value = 'default';
+            if (yearSlider.noUiSlider) {
+                yearSlider.noUiSlider.reset();
+            }
             applyFiltersAndSort();
         }
 
@@ -432,11 +599,13 @@
                 
                 populateFilterDropdown(typeFilterDropdown, () => allMediaData.map(item => item.Type).filter(Boolean), 'All Types');
                 populateFilterDropdown(genreFilterDropdown, () => allMediaData.flatMap(item => item.Genre?.split(',') || []).map(g => g.trim()).filter(Boolean), 'All Genres');
+                initializeYearSlider();
                 populateFeaturedSlider();
                 
                 lastUpdatedSpan.textContent = new Date().toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' });
                 applyFiltersAndSort();
-            } catch (error) {
+            } catch (error)
+            {
                 console.error('Failed to fetch or parse media data:', error);
                 mediaContainer.innerHTML = `<p class="text-red-400 col-span-full text-center">Error: Could not load media data. Please check the console for details.</p>`;
                 lastUpdatedSpan.textContent = 'Failed to load';
@@ -446,6 +615,7 @@
         // --- EVENT LISTENERS ---
         [searchInput, typeFilterDropdown, genreFilterDropdown, sortSelect].forEach(el => el.addEventListener('input', applyFiltersAndSort));
         resetButton.addEventListener('click', resetAll);
+        randomPickButton.addEventListener('click', pickRandomMedia);
         detailsModal.addEventListener('click', e => { if (e.target === detailsModal) hideDetailsModal(); });
         document.getElementById('close-trailer-btn').addEventListener('click', hideTrailerModal);
         trailerModal.addEventListener('click', e => { if (e.target === trailerModal) hideTrailerModal(); });
